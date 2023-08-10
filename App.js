@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar, Platform,Modal, SafeAreaView,View, Image, Dimensions,Text, TextInput,Linking } from 'react-native';
 import MyDrawer from './routes/index'
-import {  NavigationContainer } from '@react-navigation/native';
+import {  NavigationContainer, DefaultTheme  } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
 
 import { defaultStyles } from './utils';
@@ -42,6 +42,7 @@ function App() {
     return (
         <NavigationContainer 
             ref={navigationRef}
+            theme={theme}
         >
         <Modal 
           animationType="none" 
@@ -62,3 +63,11 @@ function App() {
 }
 
 export default App;
+
+const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'black'
+    },
+};

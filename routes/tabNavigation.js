@@ -21,7 +21,8 @@ const TabNavigation = ({ navigation }) =>{
           component={ HomeStack }   
           options={{ 
             headerTitleStyle: { opacity: 0 }, 
-            headerShown: false,
+            headerShown: true, 
+            headerTransparent: true,
             tabBarLabel: 'Início',
             tabBarIcon: ({size, color}) => ( <Icon name="home" size={24}  color={color}/>)
           }}  

@@ -42,6 +42,6 @@ export default function MyDrawer() {
 }
 const GlobalStack = () => (
     <Stack.Navigator screenOptions={{tabBarActiveTintColor: 'blue',labelStyle: {fontSize: 12}}} >
-      <Stack.Screen name="Bottom" component={TabNavigation} options={{  headerShown: false,}}/>
+      <Stack.Screen name="Bottom" component={TabNavigation} options={{  headerShown: false }}/>
     </Stack.Navigator>
 )
