@@ -4,11 +4,11 @@ import { Icon, ListItem,  Chip } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 
 
-export default function CardMangaList({ manga }){
+export default function CardDetails({ manga }){
     const [ favoritado, setFavoritado ] = useState(false)
     const navigation = useNavigation()
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('Detalhes', { manga })} style={styles.view}>
+        <View style={styles.view}>
             <View style={styles.image}>
                 <Text style={styles.tagCategoria}>
                     {manga?.categoria}
@@ -24,18 +24,6 @@ export default function CardMangaList({ manga }){
             </View>
             
             <View style={styles.containerDetalhes}>
-                <View style={styles.containerTituloFavorite}>
-                    <Text style={styles.titulo}>{manga?.titulo}</Text>
-                    <TouchableOpacity hitSlop={{ left: 20, bottom: 20}} onPress={() => setFavoritado(!favoritado)} style={styles.containerFavorite}>
-                        {
-                            favoritado ?
-                            <Icon name="bookmark" type="Ionicons" color="red" size={30}/> 
-                            :
-                            <Icon name="bookmark-outline" type="Ionicons" color="#fff" size={30}/>
-                        }
-                    </TouchableOpacity>
-                </View>
-
                 <View style={styles.containerRating}>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 1 ? "#B6A404" : "grey"} size={18}/>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 2 ? "#B6A404" : "grey"} size={18}/>
@@ -44,24 +32,12 @@ export default function CardMangaList({ manga }){
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
                     <Text style={{marginLeft: 5, fontSize: 12}}>{manga?.rating}</Text>
                 </View>
-                  {
-                    manga?.ultimos_capitulos?.map(cap => (
-                      <ListItem containerStyle={styles.itemList}>
-                        <ListItem.Content>
-                            <ListItem.Title style={styles.itemListTitulo}>Cap. {cap.numero}</ListItem.Title>
-                        </ListItem.Content>
-                        <ListItem.Subtitle 
-                          right={true} 
-                          style={styles.itemListData}
-                        >
-                          {cap.data}
-                        </ListItem.Subtitle>
-                    </ListItem>
-                    
-                    ))
-                  }
+                <Text style={styles.descricao}>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </Text>
             </View>
-        </TouchableOpacity>
+
+        </View>
     );
 }
 
@@ -78,34 +54,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         width: '68%', 
       },
-      titulo: {
-          color: '#fff',
-          fontWeight: '700',
-          flexWrap: 'wrap',
-          fontSize: 18,
-          width: '85%'
-      },
-      itemList: {
-        backgroundColor: 'transparent',
-        paddingVertical: 8,
-        paddingHorizontal: 0
-      },
-      itemListContent:{
-        flexDirection: 'row', 
-        justifyContent: 'flex-start',
-        alignItems: 'center', 
-        gap: 10,
-     },
-      itemListTitulo: {
-        color: '#fff',
-        padding: 0,
-        margin: 0,
-        fontSize: 13
-      },
-      itemListData: {
+      descricao:{
         color: '#d1d1d1',
-        fontSize: 12,
-      },
+      },    
       image :{
         backgroundColor: '#000',
         shadowColor: "#000",

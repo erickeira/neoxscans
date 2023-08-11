@@ -4,7 +4,7 @@ import MyDrawer from './routes/index'
 import {  NavigationContainer, DefaultTheme  } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
 
-import { defaultStyles } from './utils';
+import { defaultColors, defaultStyles } from './utils';
 
 const height = Dimensions.get('screen').height;
 
@@ -24,7 +24,7 @@ function App() {
     const [ connectionOff, setConnectionOff ] = useState(false);
    
 	useEffect(() => {
-        if(Platform.OS == 'android') StatusBar.setBackgroundColor(styles.base.primaryColor , true);
+        if(Platform.OS == 'android') StatusBar.setBackgroundColor(defaultColors.primary, true);
         StatusBar.setBarStyle('light-content', true);
  
 		const unsubscribe = NetInfo.addEventListener(state => {
@@ -68,6 +68,6 @@ const theme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      background: 'black'
+      background: defaultColors.primary,
     },
 };

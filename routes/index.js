@@ -12,6 +12,9 @@ import { useRoute } from '@react-navigation/native';
 // import DrawerContent from './drawer';
 
 import TabNavigation from './tabNavigation';
+import Detalhes from '../pages/detalhes';
+import HeaderLeft from '../components/headerLeft';
+import { defaultStyles } from '../utils';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -43,5 +46,15 @@ export default function MyDrawer() {
 const GlobalStack = () => (
     <Stack.Navigator screenOptions={{tabBarActiveTintColor: 'blue',labelStyle: {fontSize: 12}}} >
       <Stack.Screen name="Bottom" component={TabNavigation} options={{  headerShown: false }}/>
+      <Stack.Screen 
+        name="Detalhes" 
+        component={Detalhes} 
+        options={{  
+          headerShown: true,
+          headerStyle: { ...defaultStyles.defaultHeaderStyles },
+          headerTintColor: '#fff',
+          headerLeft: () => <HeaderLeft voltar color={'#fff'}/>
+        }}
+      />
     </Stack.Navigator>
 )

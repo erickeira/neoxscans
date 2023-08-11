@@ -1,20 +1,34 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { Icon } from '@rneui/themed';
 
 import HomeStack from './Stacks/homeStack';
+import { defaultColors } from '../utils';
+import { View } from 'react-native';
 
 
-const Tab = createBottomTabNavigator()
+// const Tab = createBottomTabNavigator()
+const Tab = createMaterialBottomTabNavigator();
 
 const TabNavigation = ({ navigation }) =>{
     return(
       <Tab.Navigator 
         screenOptions={{
-          tabBarActiveTintColor:  'blue' , 
-          labelStyle: { fontSize: 12 }, 
           tabBarHideOnKeyboard: 'true',
+          tabBarStyle: {
+            borderTopColor: 'transparent',
+            borderTopWidth: 0,
+            elevation: 0 
+          },
         }} 
+        activeColor='#fff'
+        inactiveColor='#adadad'
+        barStyle={{ 
+          backgroundColor: defaultColors.secundary 
+        }}
+        labeled={false}
+        // shifting={true}
       >
         <Tab.Screen 
           name="HomeTab"  
@@ -24,9 +38,36 @@ const TabNavigation = ({ navigation }) =>{
             headerShown: true, 
             headerTransparent: true,
             tabBarLabel: 'Início',
-            tabBarIcon: ({size, color}) => ( <Icon name="home" size={24}  color={color}/>)
+            tabBarBadge: false,
+            tabBarIcon: ({focused, color}) => ( 
+                <Icon name="globe" type="entypo" size={24}  color={color}/>
+            )
           }}  
         />
+        {/* <Tab.Screen 
+          name="SalvosTab"  
+          component={ HomeStack }   
+          options={{ 
+            headerTitleStyle: { opacity: 0 }, 
+            headerShown: true, 
+            headerTransparent: true,
+            tabBarLabel: 'Salvos',
+            tabBarShowLabel: false,
+            tabBarIcon: ({size, color}) => ( <Icon name="book" type="entypo" size={24}  color={color}/>)
+          }}  
+        />
+        <Tab.Screen 
+          name="ConfiguracoesTab"  
+          component={ HomeStack }   
+          options={{ 
+            headerTitleStyle: { opacity: 0 }, 
+            headerShown: true, 
+            headerTransparent: true,
+            tabBarLabel: 'Configurções',
+            tabBarShowLabel: false,
+            tabBarIcon: ({size, color}) => ( <Icon name="settings" type="ionicons" size={24}  color={color}/>)
+          }}  
+        /> */}
       </Tab.Navigator>  
     )
   } 
