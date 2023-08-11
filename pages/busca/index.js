@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import CardMangaList from '../../components/cardMangaList';
 import { defaultColors, defaultStyles } from '../../utils';
 import { Searchbar } from 'react-native-paper';
 import HeaderLeft from '../../components/headerLeft';
+
+const { height, width }  = Dimensions.get('screen');
 
 export default function Busca({ navigation , route }){
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -12,24 +14,36 @@ export default function Busca({ navigation , route }){
 
     useEffect(() => {
         navigation.setOptions({
-            header: () => (
-                <View style={styles.headerStyle}>
-                    <HeaderLeft voltar color={'#fff'}/>
-                    <Searchbar
-                        ref={ref => setInputeRef(ref)}
-                        placeholder="Digite sua busca..."
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
-                        style={styles.inputStyle}
-                        clearIcon={true}
-                        inputStyle={{color: '#fff'}}
-                        theme={{ colors: { primary: '#fff', secondary: '#d1d1d1' } }} 
-                    />
-                </View>
+            headerShown: true,
+            headerLeft: () => <HeaderLeft voltar color={'#fff'}/>,
+            headerTitle: () => 
+              <Searchbar
+                    ref={ref => setInputeRef(ref)}
+                    placeholder="Digite sua busca..."
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
+                    style={styles.inputStyle}
+                    clearIcon={true}
+                    inputStyle={{color: '#fff'}}
+                    theme={{ colors: { primary: '#fff', secondary: '#d1d1d1' } }} 
+                />
+            // header: () => (
+            //     <SafeAreaView style={styles.headerStyle}>
+            //         <HeaderLeft voltar color={'#fff'}/>
+            //         <Searchbar
+            //             ref={ref => setInputeRef(ref)}
+            //             placeholder="Digite sua busca..."
+            //             onChangeText={onChangeSearch}
+            //             value={searchQuery}
+            //             style={styles.inputStyle}
+            //             clearIcon={true}
+            //             inputStyle={{color: '#fff'}}
+            //             theme={{ colors: { primary: '#fff', secondary: '#d1d1d1' } }} 
+            //         />
+            //     </SafeAreaView>
 
-            )
+            // )
         })
-        
     },[searchQuery])
     
     useEffect(() => {
@@ -103,11 +117,15 @@ const styles = StyleSheet.create({
         display: 'flex', 
         flexDirection: 'row', 
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
     },
     inputStyle:{
         flex: 1,
-        backgroundColor: defaultColors.primary,
-        color: '#fff'
+        width: width,
+        backgroundColor: 'transparent',
+        color: '#fff',
+        paddingVertical: 0,
+        marginVertical: 0,
+        marginTop: -5,
     }
 });

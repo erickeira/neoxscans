@@ -42,11 +42,11 @@ export default function CardMangaList({ manga }){
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 3 ? "#B6A404" : "grey"} size={18}/>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 4 ? "#B6A404" : "grey"} size={18}/>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
-                    <Text style={{marginLeft: 5, fontSize: 12}}>{manga?.rating}</Text>
+                    <Text style={{marginLeft: 5, fontSize: 12,color: '#fff'}}>{manga?.rating}</Text>
                 </View>
                   {
-                    manga?.ultimos_capitulos?.map(cap => (
-                      <ListItem containerStyle={styles.itemList}>
+                    manga?.ultimos_capitulos?.map((cap, index) => (
+                      <ListItem key={index} containerStyle={styles.itemList}>
                         <ListItem.Content>
                             <ListItem.Title style={styles.itemListTitulo}>Cap. {cap.numero}</ListItem.Title>
                         </ListItem.Content>
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         paddingVertical: 3,
         fontSize: 10,
-        fontWeight: '600 '
+        fontWeight: '600',
+        color: '#fff'
       },
       containerTituloFavorite:{
         display: 'flex',

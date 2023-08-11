@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import { Icon, ListItem,  Chip } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { Divider } from '@rneui/base';
 
 
 export default function CardDetails({ manga }){
     const [ favoritado, setFavoritado ] = useState(false)
     const navigation = useNavigation()
     return (
+      <>
         <View style={styles.view}>
             <View style={styles.image}>
                 <Text style={styles.tagCategoria}>
@@ -30,7 +32,7 @@ export default function CardDetails({ manga }){
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 3 ? "#B6A404" : "grey"} size={18}/>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 4 ? "#B6A404" : "grey"} size={18}/>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
-                    <Text style={{marginLeft: 5, fontSize: 12}}>{manga?.rating}</Text>
+                    <Text style={{marginLeft: 5, fontSize: 12, color: '#666'}}>{manga?.rating}</Text>
                 </View>
                 <Text style={styles.descricao}>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
@@ -38,6 +40,38 @@ export default function CardDetails({ manga }){
             </View>
 
         </View>
+        <View style={{marginBottom: 20}}>
+          <ListItem containerStyle={styles.itemList}>
+                  <ListItem.Content>
+                      <ListItem.Title style={styles.itemListTitulo}>Avaliação</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Subtitle style={styles.itemListSubtitulo} > Média 4.9 / 5 - Votos totais : 107
+                  </ListItem.Subtitle>
+            </ListItem>
+            <ListItem containerStyle={styles.itemList}>
+                  <ListItem.Content>
+                      <ListItem.Title style={styles.itemListTitulo}>Rank</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Subtitle style={styles.itemListSubtitulo} > 74th, - 1.5M Visualizações
+                  </ListItem.Subtitle>
+            </ListItem>
+            <ListItem containerStyle={styles.itemList}>
+                  <ListItem.Content>
+                      <ListItem.Title style={styles.itemListTitulo}>Gênero(s)</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                    Artes Marciais, Isekai
+                  </ListItem.Subtitle>
+            </ListItem>
+            <ListItem containerStyle={styles.itemList}>
+                  <ListItem.Content>
+                      <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Subtitle style={styles.itemListSubtitulo} >Em lançamento </ListItem.Subtitle>
+            </ListItem>
+        </View>
+        <Divider style={{marginBottom : 20}}/>
+      </>
     );
 }
 
@@ -46,7 +80,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         display: 'flex',
         flexDirection: 'row',
-        // width: '100%'
+
       },
       containerDetalhes:{
         paddingHorizontal: 10,
@@ -85,7 +119,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         paddingVertical: 3,
         fontSize: 10,
-        fontWeight: '600 '
+        fontWeight: '600',
+        color: '#fff'
       },
       containerTituloFavorite:{
         display: 'flex',
@@ -95,6 +130,31 @@ const styles = StyleSheet.create({
       },
       containerFavorite:{
         paddingHorizontal: 5,
-      }
+      },
+      itemList: {
+        backgroundColor: 'transparent',
+        paddingVertical: 8,
+        paddingHorizontal: 0
+      },
+      itemListContent:{
+        flexDirection: 'row', 
+        justifyContent: 'flex-start',
+        alignItems: 'center', 
+        gap: 10,
+     },
+      itemListTitulo: {
+        color: '#fff',
+        padding: 0,
+        margin: 0,
+        fontSize: 15,
+        fontWeight: '700'
+      },
+      itemListSubtitulo: {
+        color: '#fff',
+        padding: 0,
+        margin: 0,
+        fontSize: 13,
+        fontWeight: '500'
+      },
 
 });

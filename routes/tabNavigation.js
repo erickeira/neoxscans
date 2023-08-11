@@ -6,6 +6,7 @@ import { Icon } from '@rneui/themed';
 import HomeStack from './Stacks/homeStack';
 import { defaultColors } from '../utils';
 import { View } from 'react-native';
+import SalvosStack from './Stacks/salvosStack';
 
 
 // const Tab = createBottomTabNavigator()
@@ -22,7 +23,7 @@ const TabNavigation = ({ navigation }) =>{
             elevation: 0 
           },
         }} 
-        activeColor='#fff'
+        activeColor={defaultColors.activeColor}
         inactiveColor='#adadad'
         barStyle={{ 
           backgroundColor: defaultColors.secundary 
@@ -44,9 +45,9 @@ const TabNavigation = ({ navigation }) =>{
             )
           }}  
         />
-        {/* <Tab.Screen 
+        <Tab.Screen 
           name="SalvosTab"  
-          component={ HomeStack }   
+          component={ SalvosStack }   
           options={{ 
             headerTitleStyle: { opacity: 0 }, 
             headerShown: true, 
@@ -56,7 +57,7 @@ const TabNavigation = ({ navigation }) =>{
             tabBarIcon: ({size, color}) => ( <Icon name="book" type="entypo" size={24}  color={color}/>)
           }}  
         />
-        <Tab.Screen 
+        {/* <Tab.Screen 
           name="ConfiguracoesTab"  
           component={ HomeStack }   
           options={{ 

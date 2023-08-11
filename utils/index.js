@@ -11,7 +11,8 @@ var api  = axios.create({
 });
 const defaultColors = {
     primary : '#181818',
-    secundary: '#000'
+    secundary: '#000',
+    activeColor: '#5494DC'
 }
 const defaultStyles = StyleSheet.create({
     defaultHeaderStyles: {
@@ -24,6 +25,7 @@ const defaultStyles = StyleSheet.create({
     },
     tituloCategoria:{
         fontWeight: '700',
+        color: '#666',
         marginVertical: 10,
         fontFamily: 'Roboto'
     }

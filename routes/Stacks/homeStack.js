@@ -33,12 +33,17 @@ const HomeStack = ({ navigation }) => {
           headerTitle: 'NeoxScans',
           headerTitleAlign: 'center',
           headerLeft: () => (
-            <Avatar
-              size={32}
-              rounded
-              source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-              containerStyle={{marginLeft: 12}}
-            />
+            <TouchableOpacity
+              onPress={() => navigation.openDrawer()}
+              hitSlop={{ right: 20, bottom: 20}}
+            >
+              <Avatar
+                size={32}
+                rounded
+                source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
+                containerStyle={{marginLeft: 12}}
+              />
+            </TouchableOpacity>
           ),
           headerRight: ()  => (
             <TouchableOpacity onPress={() => navigation.navigate('Busca')} hitSlop={{left: 20, bottom: 20}} style={{marginRight: 12}}>
@@ -55,21 +60,6 @@ const HomeStack = ({ navigation }) => {
         name="Busca" 
         component={Busca} 
         options={{
-          headerTitle: 'Faça uma busca',
-          headerTitleAlign: 'center',
-          headerLeft: () => (
-            <Avatar
-              size={32}
-              rounded
-              source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-              containerStyle={{marginLeft: 12}}
-            />
-          ),
-          headerRight: ()  => (
-            <TouchableOpacity style={{marginRight: 12}}>
-              <Icon name="search" size={24}  color={"#fff"}/>
-            </TouchableOpacity>
-          ),
           headerShown: true, 
           // headerTransparent: true,
           headerStyle: defaultStyles.defaultHeaderStyles,

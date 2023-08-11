@@ -9,12 +9,13 @@ import {
 } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useRoute } from '@react-navigation/native';
-// import DrawerContent from './drawer';
+import DrawerContent from './drawer';
 
 import TabNavigation from './tabNavigation';
 import Detalhes from '../pages/detalhes';
 import HeaderLeft from '../components/headerLeft';
-import { defaultStyles } from '../utils';
+import { defaultColors, defaultStyles } from '../utils';
+import Visualizacao from '../pages/visualizacao';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -23,14 +24,14 @@ export default function MyDrawer() {
   
     return (
         <Drawer.Navigator
-        //   drawerContent={
-        //     props => <DrawerContent {...props}/>
-        //   }
-        //   screenOptions={{
-        //     drawerStyle: {
-        //       backgroundColor: styles.base.primaryColor
-        //     },
-        //   }}
+          drawerContent={
+            props => <DrawerContent {...props}/>
+          }
+          screenOptions={{
+            drawerStyle: {
+              backgroundColor: defaultColors.secundary
+            },
+          }}
         >   
             <Drawer.Screen 
               name="Global" 
@@ -49,6 +50,16 @@ const GlobalStack = () => (
       <Stack.Screen 
         name="Detalhes" 
         component={Detalhes} 
+        options={{  
+          headerShown: true,
+          headerStyle: { ...defaultStyles.defaultHeaderStyles },
+          headerTintColor: '#fff',
+          headerLeft: () => <HeaderLeft voltar color={'#fff'}/>
+        }}
+      />
+      <Stack.Screen 
+        name="Visualizacao" 
+        component={Visualizacao} 
         options={{  
           headerShown: true,
           headerStyle: { ...defaultStyles.defaultHeaderStyles },
