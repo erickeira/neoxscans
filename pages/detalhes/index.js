@@ -1,20 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
-import { SalvarScan, api, defaultColors, defaultStyles } from '../../utils';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { GetLidos, SalvarScan, api, defaultColors, defaultStyles } from '../../utils';
 import CardDetails from '../../components/cardDetails';
 import { Avatar, Icon, ListItem } from '@rneui/base';
 import { Skeleton } from '@rneui/themed';
 import AutoHeightImage from 'react-native-auto-height-image';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Detalhes({ navigation,  route }){
     const [ favoritado, setFavoritado ] = useState(route.params.isFavoritado)
+    const [capitulosLidos, setCapituloLidos] = useState([])
     const [ carregando, setCarregando ] = useState(true)
+    const [ mudandoOrdem, setMudandoOrdem ] = useState(false)
     const { params } = route
     const manga = params?.manga
+    const isFocused = useIsFocused()
 
     async function handleFavoritar(){
       const salvo = await SalvarScan(manga)
       setFavoritado(salvo)
+    }
+
+    function mudarOrdem(){
+      setMudandoOrdem(true)
+      let auxMangaDetalhes = mangaDetalhes
+      auxMangaDetalhes.capitulos = auxMangaDetalhes.capitulos.reverse()
+      setMangaDetalhes(auxMangaDetalhes)
+      setTimeout(() => {
+        setMudandoOrdem(false)
+      }, 10);
+    }
+
+    async function handleGetLidos(){
+      let lidos = await GetLidos(route.params?.manga)
+      lidos = lidos?.lido
+      setCapituloLidos(lidos)
     }
 
     useEffect(() => {
@@ -39,6 +59,10 @@ export default function Detalhes({ navigation,  route }){
       getManga()
     },[])
 
+    useEffect(() => {
+      handleGetLidos()
+    },[isFocused])
+
     async function getManga(){
       try{
         const response = await api.post(`detalhes`, {
@@ -53,24 +77,30 @@ export default function Detalhes({ navigation,  route }){
       }
 
     }
-
+    console.log(capitulosLidos)
     return (
         <SafeAreaView style={styles.view}>
           <FlatList
-            data={mangaDetalhes?.capitulos}
+            data={mudandoOrdem ? [] : mangaDetalhes?.capitulos}
             ListHeaderComponent={(
               <View >
                <CardDetails
                   manga={mangaDetalhes}
                   carregando={carregando}
                 />
-                <Text style={[defaultStyles.tituloCategoria]}>
-                  Capitulos
-                </Text>
+                <View style={styles.containerTopoCapitulos}>
+                  <Text style={[defaultStyles.tituloCategoria]}>
+                    Capitulos
+                  </Text>
+                  <TouchableOpacity onPress={() => mudarOrdem()} style={styles.botaoOrdenar} hitSlop={{left: 20, right: 20, bottom: 5, top: 10}}>
+                    <Icon name="swap-vert" type="MaterialIcons" color={'#fff'}/>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
             renderItem={({item, index}) => {
-              let capitulo =  parseInt(item.capitulo.replace) || (mangaDetalhes?.capitulos?.length - (index + 1));
+              let capitulo =  parseInt(item.capitulo.replace('Cap. ', '')) || (mangaDetalhes?.capitulos?.length - (index + 1));
+              let capituloLido = capitulosLidos?.includes(parseInt(item.capitulo.replace('Cap. ', '')))
               return (
                 <TouchableOpacity onPress={() => navigation.navigate(`Visualizacao`, { capitulo : capitulo, url : manga?.url, manga: manga})}>
                   <ListItem containerStyle={styles.itemList}>
@@ -85,7 +115,9 @@ export default function Detalhes({ navigation,  route }){
                             style={{borderRadius: 5}}
                       />
                       <ListItem.Content>
-                          <ListItem.Title style={styles.itemListTitulo}>Cap. {item.capitulo}</ListItem.Title>
+                          <ListItem.Title style={[styles.itemListTitulo,{ color : capituloLido ? '#666' : '#fff'}]}>
+                            Cap. {item.capitulo}
+                          </ListItem.Title>
                       </ListItem.Content>
                       {
                         item.data == 'up' ?
@@ -97,7 +129,7 @@ export default function Detalhes({ navigation,  route }){
                         :
                         <ListItem.Subtitle 
                             right={true} 
-                            style={styles.itemListData}
+                            style={[styles.itemListData,{ color : capituloLido ? '#666' : '#fff'}]}
                         >
                             {item.data}
                         </ListItem.Subtitle>
@@ -145,13 +177,18 @@ export default function Detalhes({ navigation,  route }){
                     <ListItem.Chevron />
                 </ListItem>
               </>
-             
               :
-              <View style={{ paddingVertical: 60, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text allowFontScaling={ false } style={{ fontSize: 14, textAlign: 'center', color: '#fff' }}>
-                      Mangá não encontrado!
-                  </Text>
-              </View>
+              (
+                mudandoOrdem ? 
+                <ActivityIndicator color={defaultColors.activeColor} size={40} style={{flex : 1, marginTop: 100}}/>
+                :
+                <View style={{ paddingVertical: 60, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text allowFontScaling={ false } style={{ fontSize: 14, textAlign: 'center', color: '#fff' }}>
+                        Mangá não encontrado!
+                    </Text>
+                </View>
+              )
+
             }
             keyExtractor={(item, index) => {  return `${item.numero}-${index}` }}
           />
@@ -166,25 +203,40 @@ const styles = StyleSheet.create({
     containerFavorite:{
         marginRight: 20
     },
+    containerTopoCapitulos:{
+      display: 'flex', 
+      flexDirection: 'row', 
+      justifyContent: 'space-between', 
+      marginHorizontal: 10,
+      marginTop: 10,
+      alignItems: 'center'
+    },
+    botaoOrdenar: {
+      borderWidth: 0.3,
+      borderColor: '#fff',
+      paddingHorizontal: 23,
+      paddingVertical: 4,
+      borderRadius: 4
+    },
     itemList: {
         backgroundColor: 'transparent',
         paddingVertical: 15,
         paddingHorizontal: 0
-      },
-      itemListContent:{
-        flexDirection: 'row', 
-        justifyContent: 'flex-start',
-        alignItems: 'center', 
-        gap: 10,
-     },
-      itemListTitulo: {
-        color: '#fff',
-        padding: 0,
-        margin: 0,
-        fontSize: 18
-      },
-      itemListData: {
-        color: '#d1d1d1',
-        fontSize: 14,
-      },
+    },
+    itemListContent:{
+      flexDirection: 'row', 
+      justifyContent: 'flex-start',
+      alignItems: 'center', 
+      gap: 10,
+    },
+    itemListTitulo: {
+      color: '#fff',
+      padding: 0,
+      margin: 0,
+      fontSize: 18
+    },
+    itemListData: {
+      color: '#d1d1d1',
+      fontSize: 14,
+    },
 });

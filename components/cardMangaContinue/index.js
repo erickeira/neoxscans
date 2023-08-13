@@ -11,7 +11,7 @@ export default function CardMangaContinue({ manga, callbackrefresh }){
     const [ favoritado, setFavoritado ] = useState(false)
     const [ options, setOptions ] = useState(false)
     const navigation = useNavigation()
-
+    
     const  progressoCapitulo = (atual, ultimo_capitulo) => {
       if( ultimo_capitulo.numero == 'up') return 0.5
       let progresso = ((atual * 100 ) / ultimo_capitulo.numero.replace('Cap. ', '') ) / 100
@@ -28,9 +28,6 @@ export default function CardMangaContinue({ manga, callbackrefresh }){
           style={styles.view}
         >
             <View style={styles.image}>
-                <Text style={styles.tagCategoria}>
-                    {manga?.tipo.toUpperCase()}
-                </Text>
                 {
                   manga?.image ?
                   <AutoHeightImage

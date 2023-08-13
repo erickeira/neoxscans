@@ -116,30 +116,43 @@ export default function CardDetails({ manga, carregando }){
                             {manga?.generos}
                           </ListItem.Subtitle>
                     </ListItem>
+                    {
+                      manga?.estudio ?
+                      <ListItem containerStyle={styles.itemList}>
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.itemListTitulo}>Estúdio(s)</ListItem.Title>
+                        </ListItem.Content>
+                        <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                          {manga?.estudio}
+                        </ListItem.Subtitle>
+                      </ListItem>
+                      : null
+                    }
+                   {
+                    manga?.lancamento ?
                     <ListItem containerStyle={styles.itemList}>
-                          <ListItem.Content>
-                              <ListItem.Title style={styles.itemListTitulo}>Estúdio(s)</ListItem.Title>
-                          </ListItem.Content>
-                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
-                            {manga?.estudio}
-                          </ListItem.Subtitle>
+                      <ListItem.Content>
+                          <ListItem.Title style={styles.itemListTitulo}>Lançamento</ListItem.Title>
+                      </ListItem.Content>
+                      <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                        {manga?.lancamento}
+                      </ListItem.Subtitle>
                     </ListItem>
-                    <ListItem containerStyle={styles.itemList}>
-                          <ListItem.Content>
-                              <ListItem.Title style={styles.itemListTitulo}>Lançamento</ListItem.Title>
-                          </ListItem.Content>
-                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
-                            {manga?.lancamento}
-                          </ListItem.Subtitle>
-                    </ListItem>
-                    <ListItem containerStyle={styles.itemList}>
-                          <ListItem.Content>
-                              <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
-                          </ListItem.Content>
-                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
-                            {manga?.status}
-                          </ListItem.Subtitle>
-                    </ListItem>
+                    : null
+                   }
+                    {
+                      manga?.status ? 
+                      <ListItem containerStyle={styles.itemList}>
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
+                        </ListItem.Content>
+                        <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                          {manga?.status}
+                        </ListItem.Subtitle>
+                      </ListItem>
+                      : null
+                    }
+
                 </View>
             </View>
         </View>

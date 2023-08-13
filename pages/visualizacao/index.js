@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView,ImageBackground, FlatList,Image, Dimensions, ActivityIndicator} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { SalvarLeitura, api, defaultColors, GetLeitura, defaultStyles } from '../../utils';
+import { SalvarLeitura, api, defaultColors, GetLeitura, defaultStyles, MarcarCapituloLido, GetLidos } from '../../utils';
 import { WebView } from 'react-native-webview';
 
 const { height, width } = Dimensions.get('screen');
@@ -20,11 +20,15 @@ export default function Visualizacao({navigation, route }){
       })
     }, [capitulo])
 
+    async function handleMarcacoes(){
+      await SalvarLeitura(route.params?.manga, route.params?.capitulo)
+      await MarcarCapituloLido(route.params?.manga, route.params?.capitulo)
+    }
+
     useEffect(() => {
       setCarregando(true)
       // getCapitulo()
-      SalvarLeitura(route.params?.manga, route.params?.capitulo)
-      // GetLeitura(route.params?.manga)
+      handleMarcacoes()
     },[route.params])
 
     async function getCapitulo(){

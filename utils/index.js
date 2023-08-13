@@ -90,6 +90,35 @@ async function SalvarScan(scan){
     return lendo.reverse()
  }
  
+async function MarcarCapituloLido(manga, capitulo){
+    let salvo = false
+    let lido = await AsyncStorage.getItem('lido')
+    lido = JSON.parse(lido) ? JSON.parse(lido) : [];
+    let isSalvo = lido.find(item => item.url == manga.url)
+    if(!isSalvo) {
+        lido.push({
+            ...manga,
+            ...{ lido : [ capitulo ] }
+        })
+    }else{
+        if(!isSalvo?.lido?.includes(capitulo)){
+            isSalvo?.lido.push(capitulo)
+            lido = lido.filter(item => item.url != manga.url)
+            lido.push(isSalvo)
+            salvo = true
+        }
+    }
+    
+    await AsyncStorage.setItem('lido', JSON.stringify(lido))
+    return salvo
+} 
+
+async function GetLidos(manga){
+    let lido = await AsyncStorage.getItem('lido')
+    lido = JSON.parse(lido) ? JSON.parse(lido) : [];
+    let mangaLido = lido.find(item => item.url == manga.url);
+    return mangaLido
+}
 
 export {
     api,
@@ -99,5 +128,7 @@ export {
     SalvarLeitura,
     RemoverLeitura,
     GetLeitura,
-    GetLeituras
+    GetLeituras,
+    MarcarCapituloLido,
+    GetLidos
 }
