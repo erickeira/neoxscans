@@ -3,7 +3,7 @@ import { TouchableOpacity, StatusBar } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainerRefContext, useIsFocused, useNavigationState, useRoute } from '@react-navigation/native';
 import { Avatar } from '@rneui/themed';
-
+import User from '../../assets/images/user.png'
 
 const Stack = createStackNavigator();
 
@@ -33,14 +33,19 @@ const SalvosStack = ({ navigation }) => {
         options={{
           headerTitle: 'Salvos',
           headerTitleAlign: 'center',
-          headerLeft: () => (
-            <Avatar
-              size={32}
-              rounded
-              source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-              containerStyle={{marginLeft: 12}}
-            />
-          ),
+          // headerLeft: () => (
+          //   <TouchableOpacity
+          //     // onPress={() => navigation.openDrawer()}
+          //     hitSlop={{ right: 20, bottom: 20}}
+          //   >
+          //     <Avatar
+          //       size={32}
+          //       rounded
+          //       source={User}
+          //       containerStyle={{marginLeft: 12}}
+          //     />
+          //   </TouchableOpacity>
+          // ),
           headerShown: true, 
           // headerTransparent: true,
           headerStyle: defaultStyles.defaultHeaderStyles,

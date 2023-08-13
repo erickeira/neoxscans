@@ -1,28 +1,101 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity,Dimensions } from 'react-native';
 import { Icon, ListItem,  Chip } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { Divider } from '@rneui/base';
+import { Skeleton } from '@rneui/themed';
+import { defaultColors } from '../../utils';
 
+const { height, width }  = Dimensions.get('screen');
 
-export default function CardDetails({ manga }){
+export default function CardDetails({ manga, carregando }){
     const [ favoritado, setFavoritado ] = useState(false)
     const navigation = useNavigation()
+    if(carregando){
+      return (
+        <>
+          <View style={styles.view}>
+              <View style={styles.image}>
+                  <Skeleton animation="pulse" width={120} height={170} />
+              </View>
+              
+              <View style={styles.containerDetalhes}>
+                  <View style={styles.containerRating}>
+                      <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 1 ? "#B6A404" : "grey"} size={18}/>
+                      <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 2 ? "#B6A404" : "grey"} size={18}/>
+                      <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 3 ? "#B6A404" : "grey"} size={18}/>
+                      <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 4 ? "#B6A404" : "grey"} size={18}/>
+                      <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
+                      <Text style={{marginLeft: 5, fontSize: 12, color: '#666'}}>{manga?.rating}</Text>
+                  </View>
+                  <View style={{marginTop: 10}}>
+                      <ListItem containerStyle={styles.itemList}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.itemListTitulo}>Gênero(s)</ListItem.Title>
+                            </ListItem.Content>
+                            <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                              <Skeleton animation="pulse" width={100} height={20} />
+                            </ListItem.Subtitle>
+                      </ListItem>
+                      <ListItem containerStyle={styles.itemList}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.itemListTitulo}>Estúdio(s)</ListItem.Title>
+                            </ListItem.Content>
+                            <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            <Skeleton animation="pulse" width={100} height={20} />
+                            </ListItem.Subtitle>
+                      </ListItem>
+                      <ListItem containerStyle={styles.itemList}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.itemListTitulo}>Lançamento</ListItem.Title>
+                            </ListItem.Content>
+                            <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            <Skeleton animation="pulse" width={100} height={20} />
+                            </ListItem.Subtitle>
+                      </ListItem>
+                      <ListItem containerStyle={styles.itemList}>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
+                            </ListItem.Content>
+                            <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            <Skeleton animation="pulse" width={100} height={20} />
+                            </ListItem.Subtitle>
+                      </ListItem>
+                  </View>
+              </View>
+          </View>
+          <Text style={styles.descricao}>
+            <Skeleton animation="pulse" width={width} height={100} />
+          </Text>
+          <Divider/>
+        </>
+      );
+    }
     return (
       <>
         <View style={styles.view}>
             <View style={styles.image}>
                 <Text style={styles.tagCategoria}>
-                    {manga?.categoria}
+                    {manga?.tipo}
                 </Text>
+                {
+                  manga?.image ?
+                  <Image  
+                      source={ {
+                          uri : manga?.image
+                      }} 
+                      width={120} 
+                      height={170}
+                  />
+                  :
+                  <View style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Icon name='image' size={40} />
+                    <Text style={{color: '#666'}}>Sem imagem</Text>
+                  </View>
+                }
 
-                <Image  
-                    source={ {
-                        uri : manga?.image
-                    }} 
-                    width={120} 
-                    height={170}
-                />
+
+               
             </View>
             
             <View style={styles.containerDetalhes}>
@@ -34,43 +107,46 @@ export default function CardDetails({ manga }){
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
                     <Text style={{marginLeft: 5, fontSize: 12, color: '#666'}}>{manga?.rating}</Text>
                 </View>
-                <Text style={styles.descricao}>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                </Text>
+                <View style={{marginTop: 10}}>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Gênero(s)</ListItem.Title>
+                          </ListItem.Content>
+                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            {manga?.generos}
+                          </ListItem.Subtitle>
+                    </ListItem>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Estúdio(s)</ListItem.Title>
+                          </ListItem.Content>
+                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            {manga?.estudio}
+                          </ListItem.Subtitle>
+                    </ListItem>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Lançamento</ListItem.Title>
+                          </ListItem.Content>
+                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            {manga?.lancamento}
+                          </ListItem.Subtitle>
+                    </ListItem>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
+                          </ListItem.Content>
+                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            {manga?.status}
+                          </ListItem.Subtitle>
+                    </ListItem>
+                </View>
             </View>
-
         </View>
-        <View style={{marginBottom: 20}}>
-          <ListItem containerStyle={styles.itemList}>
-                  <ListItem.Content>
-                      <ListItem.Title style={styles.itemListTitulo}>Avaliação</ListItem.Title>
-                  </ListItem.Content>
-                  <ListItem.Subtitle style={styles.itemListSubtitulo} > Média 4.9 / 5 - Votos totais : 107
-                  </ListItem.Subtitle>
-            </ListItem>
-            <ListItem containerStyle={styles.itemList}>
-                  <ListItem.Content>
-                      <ListItem.Title style={styles.itemListTitulo}>Rank</ListItem.Title>
-                  </ListItem.Content>
-                  <ListItem.Subtitle style={styles.itemListSubtitulo} > 74th, - 1.5M Visualizações
-                  </ListItem.Subtitle>
-            </ListItem>
-            <ListItem containerStyle={styles.itemList}>
-                  <ListItem.Content>
-                      <ListItem.Title style={styles.itemListTitulo}>Gênero(s)</ListItem.Title>
-                  </ListItem.Content>
-                  <ListItem.Subtitle style={styles.itemListSubtitulo} >
-                    Artes Marciais, Isekai
-                  </ListItem.Subtitle>
-            </ListItem>
-            <ListItem containerStyle={styles.itemList}>
-                  <ListItem.Content>
-                      <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
-                  </ListItem.Content>
-                  <ListItem.Subtitle style={styles.itemListSubtitulo} >Em lançamento </ListItem.Subtitle>
-            </ListItem>
-        </View>
-        <Divider style={{marginBottom : 20}}/>
+        <Text style={styles.descricao}>
+            {manga?.descricao?.join('\n\n')}
+        </Text>
+        <Divider/>
       </>
     );
 }
@@ -90,8 +166,13 @@ const styles = StyleSheet.create({
       },
       descricao:{
         color: '#d1d1d1',
+        marginVertical: 20,
+        paddingHorizontal: 8
       },    
       image :{
+        width: 120, 
+        height: 170,
+        display: 'flex',
         backgroundColor: '#000',
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 5 },

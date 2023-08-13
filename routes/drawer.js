@@ -11,6 +11,8 @@ import { Badge, Icon } from '@rneui/themed'
 import { configureAPI, defaultColors, defaultStyles, existsOrError } from "../utils";
 import { navigationRef } from '../App'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Avatar } from '@rneui/themed';
+import User from '../assets/images/user.png'
 
 const windowHeight = Dimensions.get('window').height; 
 
@@ -30,7 +32,7 @@ export default function DrawerContent(props){
             {...props}
         >
             <DrawerItemList {...props} />
-            <DrawerItem
+            {/* <DrawerItem
                 label="Início"
                 style={styles.drawerItem}
                 onPress={() => navigation.navigate('HomeTab')}
@@ -38,7 +40,23 @@ export default function DrawerContent(props){
                 icon={({ focused, color, size }) => 
                     <Icon  type="feather" color={'#fff'} size={size} name={'home'} />
                 }
-            />
+            /> */}
+            <View style={{display: 'flex', flexDirection : 'row', alignItems: 'center', gap: 10, marginVertical:15}}>
+                <Avatar
+                    size={32}
+                    rounded
+                    source={User}
+                    containerStyle={{marginLeft: 12}}
+                />
+                <Text
+                    style={{
+                        fontSize: 16,
+                        color: '#fff'
+                    }}
+                >
+                    Fazer login (em breve)
+                </Text>
+            </View>
         </DrawerContentScrollView>
     )
 }

@@ -41,7 +41,12 @@ const TabNavigation = ({ navigation }) =>{
             tabBarLabel: 'Início',
             tabBarBadge: false,
             tabBarIcon: ({focused, color}) => ( 
-                <Icon name="globe" type="entypo" size={24}  color={color}/>
+                <Icon 
+                  name="globe" 
+                  type="entypo" 
+                  size={24}  
+                  color={color}
+                />
             )
           }}  
         />

@@ -1,57 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import { Icon, ListItem,  Chip } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
-import { SalvarScan, defaultColors } from '../../utils';
+import { Skeleton } from '@rneui/themed';
 
 
-export default function CardMangaList({ manga, isFavoritado, callbackremove }){
-    const [ favoritado, setFavoritado ] = useState(isFavoritado)
-    const navigation = useNavigation()
-
-    async function handleFavoritar(){
-      const salvo = await SalvarScan(manga)
-      setFavoritado(salvo)
-      if(callbackremove) callbackremove()
-    }
-
-    useEffect(() => {
-      setFavoritado(isFavoritado)
-    },[isFavoritado])
+export default function CardMangaListSkeleton({ manga }){
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('Detalhes', { manga, isFavoritado })} style={styles.view}>
+        <View style={styles.view}>
             <View style={styles.image}>
-                <Text style={styles.tagCategoria}>
-                    {manga?.tipo?.toUpperCase()}
-                </Text>
-                {
-                  manga?.image ?
-                  <Image  
-                      source={ {
-                          uri : manga?.image
-                      }} 
-                      width={120} 
-                      height={170}
-                  />
-                  :
-                  <View style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <Icon name='image' size={40} />
-                    <Text style={{color: '#666'}}>Sem imagem</Text>
-                  </View>
-                }
+                <Skeleton animation="pulse" width={120} height={170} />
             </View>
-            
             <View style={styles.containerDetalhes}>
                 <View style={styles.containerTituloFavorite}>
-                    <Text style={styles.titulo}>{manga?.titulo}</Text>
-                    <TouchableOpacity hitSlop={{ left: 20, bottom: 20}} onPress={() => handleFavoritar()} style={styles.containerFavorite}>
-                        {
-                            favoritado ?
-                            <Icon name="bookmark" type="Ionicons" color={defaultColors.activeColor} size={30}/> 
-                            :
-                            <Icon name="bookmark-outline" type="Ionicons" color="#fff" size={30}/>
-                        }
-                    </TouchableOpacity>
+                    <View style={styles.titulo}>
+                        <Skeleton animation="pulse" width={150} height={20} />
+                    </View>
                 </View>
 
                 <View style={styles.containerRating}>
@@ -62,34 +26,40 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
                     <Text style={{marginLeft: 5, fontSize: 12,color: '#fff'}}>{manga?.rating}</Text>
                 </View>
-                  {
-                    manga?.capitulos?.map((cap, index) => (
-                      <ListItem key={index} containerStyle={styles.itemList}>
-                        <ListItem.Content>
-                            <ListItem.Title style={styles.itemListTitulo}>{cap.numero}</ListItem.Title>
-                        </ListItem.Content>
-                        {
-                          cap.data == 'up'? 
-                          <Image 
-                            source={{ uri: 'https://neoxscans.net/wp-content/uploads/2022/08/Botao-copiaa.png'}} 
-                            width={18}
-                            height={18}
-                          />
-                          :
-                          <ListItem.Subtitle 
+
+                <ListItem containerStyle={styles.itemList}>
+                    <ListItem.Content>
+                        <ListItem.Title style={styles.itemListTitulo}>
+                            <Skeleton animation="pulse" width={50} height={20} />
+                        </ListItem.Title>
+                    </ListItem.Content>
+
+                        <ListItem.Subtitle 
                             right={true} 
                             style={styles.itemListData}
-                          >
-                            {cap.data}
-                          </ListItem.Subtitle>
-                        }
-      
-                    </ListItem>
-                    
-                    ))
-                  }
+                        >
+                        <Skeleton animation="pulse" width={150} height={20} />
+                        </ListItem.Subtitle>
+
+                </ListItem>
+                <ListItem containerStyle={styles.itemList}>
+                    <ListItem.Content>
+                        <ListItem.Title style={styles.itemListTitulo}>
+                            <Skeleton animation="pulse" width={50} height={20} />
+                        </ListItem.Title>
+                    </ListItem.Content>
+
+                        <ListItem.Subtitle 
+                            right={true} 
+                            style={styles.itemListData}
+                        >
+                        <Skeleton animation="pulse" width={60} height={20} />
+                        </ListItem.Subtitle>
+
+                </ListItem>
+
             </View>
-        </TouchableOpacity>
+        </View>
     );
 }
 

@@ -1,66 +1,70 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, FlatList } from 'react-native';
 import CardMangaList from '../../components/cardMangaList';
 import { defaultStyles } from '../../utils';
 import CardMangaContinue from '../../components/cardMangaContinue';
+import CardMangaListSkeleton from '../../components/carMangaListSkeleton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Salvos(){
+    const [salvos, setSalvos] = useState([])
+    const [carregando, setCarregando] = useState(true)
+    const isFocused = useIsFocused()
+
+    useEffect(() =>{
+      getSalvos()
+    },[isFocused])
+
+    async function getSalvos(){
+      setCarregando(true)
+      let salvos = await AsyncStorage.getItem('salvos')
+      salvos = JSON.parse(salvos) ? JSON.parse(salvos) : [];
+      setSalvos(salvos)
+      setCarregando(false)
+    }
+
+    async function removerItem(item){
+      let salvosAux = salvos.filter(salvo => salvo.url != item.url);
+      setSalvos(salvosAux)
+    }
 
     return (
         <SafeAreaView style={styles.view}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={defaultStyles.tituloCategoria}>
-              (5) Resultados
-            </Text>
-            <CardMangaList
-              manga={{
-                image: 'https://neoxscans.net/wp-content/uploads/2022/12/CAPA_Pick_me_up_2-350x476.png',
-                titulo: 'Pick Me Up!',
-                categoria: 'MANHWA',
-                rating: 4.8,
-                ultimos_capitulos: [
-                  { numero: 54, data: 'Atualizado' },
-                  { numero: 53, data: '05/08/2023' },
-                ]
-              }}
-            />
-            <CardMangaList
-              manga={{
-                image: 'https://neoxscans.net/wp-content/uploads/2023/07/MartialGodRegressedToLevel2Capa-350x476.jpg',
-                titulo: 'Martial god Regressed to level 2',
-                categoria: 'MANHWA',
-                rating: 4.9,
-                ultimos_capitulos: [
-                  { numero: 21, data: 'Atualizado' },
-                  { numero: 20, data: 'Atualizado' },
-                ]
-              }}
-            />
-            <CardMangaList
-              manga={{
-                image: 'https://neoxscans.net/wp-content/uploads/2021/05/Skeleton-copiar-1-e1665796912654-175x238.jpg',
-                titulo: 'Pick Me Up!',
-                categoria: 'MANHWA',
-                rating: 4.8,
-                ultimos_capitulos: [
-                  { numero: 54, data: 'Atualizado' },
-                  { numero: 53, data: '05/08/2023' },
-                ]
-              }}
-            />
-            <CardMangaList
-              manga={{
-                image: 'https://neoxscans.net/wp-content/uploads/2022/05/The-Great-Mage-Returns-After-4000-Years-350x476.jpg',
-                titulo: 'The Great Mage Returns After 4,000 Years!',
-                categoria: 'MANHWA',
-                rating: 4.7,
-                ultimos_capitulos: [
-                  { numero: 181, data: 'Atualizado' },
-                  { numero: 180, data: '05/08/2023' },
-                ]
-              }}
-            />
-          </ScrollView>
+          <FlatList
+            data={salvos}
+            ListHeaderComponent={(
+              <View >
+                <Text style={defaultStyles.tituloCategoria}>
+                  ({salvos.length}) Scans salvas
+                </Text>
+              </View>
+            )}
+            renderItem={({item, index}) => (
+              <CardMangaList 
+                isFavoritado={true} 
+                carregando={carregando} 
+                manga={item}
+                callbackremove={() => removerItem(item)}
+              />
+            )  }
+            ListEmptyComponent={
+              carregando ? 
+              <>
+                <CardMangaListSkeleton/>
+                <CardMangaListSkeleton/>
+                <CardMangaListSkeleton/>
+              </>
+
+              :
+              <View style={{ paddingVertical: 60, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text allowFontScaling={ false } style={{ fontSize: 14, textAlign: 'center', color: '#fff' }}>
+                      Nenhuma scan salva até o momento!
+                  </Text>
+              </View>
+            }
+            keyExtractor={(item, index) => {  return `${item.numero}-${index}` }}
+          />
         </SafeAreaView>
     );
 }

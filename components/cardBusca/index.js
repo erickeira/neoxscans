@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import { Icon, ListItem,  Chip } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { SalvarScan, defaultColors } from '../../utils';
 
 
-export default function CardMangaList({ manga, isFavoritado, callbackremove }){
+export default function CardBuscaList({ manga, isFavoritado, callbackremove }){
     const [ favoritado, setFavoritado ] = useState(isFavoritado)
     const navigation = useNavigation()
 
@@ -15,14 +15,11 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
       if(callbackremove) callbackremove()
     }
 
-    useEffect(() => {
-      setFavoritado(isFavoritado)
-    },[isFavoritado])
     return (
         <TouchableOpacity onPress={() => navigation.navigate('Detalhes', { manga, isFavoritado })} style={styles.view}>
             <View style={styles.image}>
                 <Text style={styles.tagCategoria}>
-                    {manga?.tipo?.toUpperCase()}
+                    {manga?.categoria}
                 </Text>
                 {
                   manga?.image ?
@@ -61,6 +58,33 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 4 ? "#B6A404" : "grey"} size={18}/>
                     <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
                     <Text style={{marginLeft: 5, fontSize: 12,color: '#fff'}}>{manga?.rating}</Text>
+                </View>
+                <View style={{marginTop: 10}}>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Gênero(s)</ListItem.Title>
+                              <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                                {manga?.generos.join(', ')}
+                            </ListItem.Subtitle>
+                          </ListItem.Content>
+
+                    </ListItem>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Lançamento</ListItem.Title>
+                          </ListItem.Content>
+                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            {manga?.lancamento}
+                          </ListItem.Subtitle>
+                    </ListItem>
+                    <ListItem containerStyle={styles.itemList}>
+                          <ListItem.Content>
+                              <ListItem.Title style={styles.itemListTitulo}>Status</ListItem.Title>
+                          </ListItem.Content>
+                          <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                            {manga?.status}
+                          </ListItem.Subtitle>
+                    </ListItem>
                 </View>
                   {
                     manga?.capitulos?.map((cap, index) => (
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
       },
       itemList: {
         backgroundColor: 'transparent',
-        paddingVertical: 8,
+        paddingVertical: 3,
         paddingHorizontal: 0
       },
       itemListContent:{
@@ -128,13 +152,22 @@ const styles = StyleSheet.create({
         color: '#fff',
         padding: 0,
         margin: 0,
-        fontSize: 13
+        fontSize: 13,
+        fontWeight: '700'
+      },
+      itemListSubtitulo: {
+        color: '#adadad',
+        padding: 0,
+        margin: 0,
+        fontSize: 13,
+        fontWeight: '500'
       },
       itemListData: {
         color: '#d1d1d1',
         fontSize: 12,
       },
       image :{
+        height: 170,
         backgroundColor: '#000',
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 5 },

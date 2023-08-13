@@ -16,7 +16,7 @@ export default function HeaderLeft({ voltar, color, close }){
         )
     }
     return(
-        <TouchableOpacity style={{paddingHorizontal: 10}} onPress={() => navigation.openDrawer()} >
+        <TouchableOpacity style={{paddingHorizontal: 10}} onPress={() => {/* navigation.openDrawer() */}} >
             <Icon type="material" name="menu" size={28}  color={color}/>
         </TouchableOpacity>
     )

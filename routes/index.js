@@ -62,6 +62,7 @@ const GlobalStack = () => (
         component={Visualizacao} 
         options={{  
           headerShown: true,
+          headerTitle: 'Visualização',
           headerStyle: { ...defaultStyles.defaultHeaderStyles },
           headerTintColor: '#fff',
           headerLeft: () => <HeaderLeft voltar color={'#fff'}/>
