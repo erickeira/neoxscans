@@ -10,8 +10,8 @@ export default function HeaderLeft({ voltar, color, close }){
 
     if(voltar) {
         return(
-            <TouchableOpacity style={{paddingHorizontal: 10}} onPress={() => navigation.goBack()}  >
-                <Icon type="material" name="chevron-left" size={40} color={color}/>
+            <TouchableOpacity style={{paddingLeft: 15, paddingVertical: 10}} onPress={() => navigation.goBack()}  >
+                <Icon type="MaterialIcons" name="arrow-back" size={25} color={color}/>
             </TouchableOpacity>
         )
     }

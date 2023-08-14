@@ -8,13 +8,16 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function Detalhes({ navigation,  route }){
-    const [ favoritado, setFavoritado ] = useState(route.params.isFavoritado)
+    const [ favoritado, setFavoritado ] = useState(route.params?.isFavoritado)
     const [capitulosLidos, setCapituloLidos] = useState([])
     const [ carregando, setCarregando ] = useState(true)
     const [ mudandoOrdem, setMudandoOrdem ] = useState(false)
     const { params } = route
     const manga = params?.manga
+    const [ mangaDetalhes, setMangaDetalhes] = useState({})
     const isFocused = useIsFocused()
+    const [ capitulosRef, setCapitulosRef ] = useState(null)
+    const capitulo = route.params?.capitulo
 
     async function handleFavoritar(){
       const salvo = await SalvarScan(manga)
@@ -53,7 +56,6 @@ export default function Detalhes({ navigation,  route }){
         })
     },[favoritado, manga])
 
-    const [ mangaDetalhes, setMangaDetalhes] = useState([])
 
     useEffect(() => {
       getManga()
@@ -77,11 +79,12 @@ export default function Detalhes({ navigation,  route }){
       }
 
     }
-    console.log(capitulosLidos)
+
     return (
         <SafeAreaView style={styles.view}>
           <FlatList
-            data={mudandoOrdem ? [] : mangaDetalhes?.capitulos}
+            data={mudandoOrdem ? mangaDetalhes?.capitulos.slice(0, -1) : mangaDetalhes?.capitulos} // só existe esse ternário pra forçar atualização
+            ref={ref => setCapitulosRef(ref)}
             ListHeaderComponent={(
               <View >
                <CardDetails
