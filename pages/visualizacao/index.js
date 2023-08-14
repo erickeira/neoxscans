@@ -64,7 +64,7 @@ export default function Visualizacao({navigation, route }){
         />
         <ViewOptions
           begin={numeroCapitulo == 1 || numeroCapitulo == 0}
-          last={ numeroCapitulo == route.params?.manga.capitulos[0].numero.replace('Cap. ', '') }
+          last={ numeroCapitulo == route.params?.manga.capitulos[0].numero.replace('Cap. ', '').replace('Cap. ', '') }
           onPressBack={() => setNumeroCapitulo(numeroCapitulo - 1)}
           onPressNext={() => setNumeroCapitulo(numeroCapitulo + 1)}
         />

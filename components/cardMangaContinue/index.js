@@ -14,7 +14,7 @@ export default function CardMangaContinue({ manga, callbackrefresh }){
     
     const  progressoCapitulo = (atual, ultimo_capitulo) => {
       if( ultimo_capitulo.numero == 'up') return 0.5
-      let progresso = ((atual * 100 ) / ultimo_capitulo.numero.replace('Cap. ', '') ) / 100
+      let progresso = ((atual * 100 ) / ultimo_capitulo.numero.replace('Cap. ', '').replace('Cap. ', '') ) / 100
       return parseFloat(progresso.toFixed(1) || 0)
     }
     return (
