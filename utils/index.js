@@ -10,18 +10,18 @@ var api  = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 const defaultColors = {
-    primary : '#181818',
-    secundary: '#000',
-    activeColor: '#5494DC'
+    primary : '#262626',
+    secundary: '#181818',
+    activeColor: '#8D1C1C'
 }
 const defaultStyles = StyleSheet.create({
     defaultHeaderStyles: {
         backgroundColor: defaultColors.primary,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 0 },
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 1,
         shadowRadius: 5,
-        elevation: 0
+        elevation: 6
     },
     tituloCategoria:{
         fontWeight: '700',

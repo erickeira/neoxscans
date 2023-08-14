@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">NeoxScans</string>
+    <string name="app_name">Murim Gate</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">UXQ0vrQEihMJiniTdsUkkN_yHiFiXxOLF7UTv</string>
 </resources>

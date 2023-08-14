@@ -5,7 +5,7 @@ import { NavigationContainerRefContext, useIsFocused, useNavigationState, useRou
 import { Avatar } from '@rneui/themed';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-import Logo from '../../assets/images/logo_neox.png'
+import Logo from '../../assets/images/logo.png'
 import User from '../../assets/images/user.png'
 
 import Home from '../../pages/home'; 

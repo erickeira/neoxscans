@@ -112,6 +112,7 @@ export default function Home(){
                 </Text>
               </View>
             )}
+            showsVerticalScrollIndicator={false}
             renderItem={({item, index}) => {
               let isFavoritado = salvos.find(salvo => salvo.url == item.url)?.url?.length > 0
               return (<CardMangaList isFavoritado={isFavoritado} manga={item}/>) 

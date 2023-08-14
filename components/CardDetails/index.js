@@ -76,7 +76,7 @@ export default function CardDetails({ manga, carregando }){
         <View style={styles.view}>
             <View style={styles.image}>
                 <Text style={styles.tagCategoria}>
-                    {manga?.tipo}
+                    {manga?.tipo?.toUpperCase()}
                 </Text>
                 {
                   manga?.image ?
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
       tagCategoria:{
         position: 'absolute',
         zIndex: 10,
-        backgroundColor: '#0492C2',
+        backgroundColor: '#8D1C1C',
         paddingHorizontal: 5,
         paddingVertical: 3,
         fontSize: 10,

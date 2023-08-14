@@ -4,6 +4,7 @@ import MyDrawer from './routes/index'
 import {  NavigationContainer, DefaultTheme  } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
 import { PaperProvider } from 'react-native-paper';
+import codePush from "react-native-code-push";
 
 import { defaultColors, defaultStyles } from './utils';
 
@@ -64,7 +65,13 @@ function App() {
     
 }
 
-export default App;
+const codePushOptions = {
+    checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+    installMode: codePush.InstallMode.ON_NEXT_RESUME
+};
+
+// export default App;
+export default codePush(codePushOptions)(App);
 console.log(DefaultTheme)
 const theme = {
     ...DefaultTheme,

@@ -70,11 +70,17 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
                         </ListItem.Content>
                         {
                           cap.data == 'up'? 
-                          <Image 
-                            source={{ uri: 'https://neoxscans.net/wp-content/uploads/2022/08/Botao-copiaa.png'}} 
-                            width={18}
-                            height={18}
-                          />
+                          <ListItem.Subtitle 
+                            right={true} 
+                            style={[styles.itemListData]}
+                          >
+                            UP
+                          </ListItem.Subtitle>
+                          // <Image 
+                          //   source={{ uri: 'https://neoxscans.net/wp-content/uploads/2022/08/Botao-copiaa.png'}} 
+                          //   width={18}
+                          //   height={18}
+                          // />
                           :
                           <ListItem.Subtitle 
                             right={true} 
@@ -158,7 +164,7 @@ const styles = StyleSheet.create({
       tagCategoria:{
         position: 'absolute',
         zIndex: 10,
-        backgroundColor: '#0492C2',
+        backgroundColor: '#8D1C1C',
         paddingHorizontal: 5,
         paddingVertical: 3,
         fontSize: 10,

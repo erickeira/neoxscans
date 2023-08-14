@@ -16,7 +16,7 @@ export default function Chip({ titulo, onPress}){
 
 const styles = StyleSheet.create({
     view: {
-      borderColor: defaultColors.activeColor,
+      borderColor: '#fff',
       borderWidth: 0.3,
       paddingHorizontal: 15,
       paddingVertical: 5,
@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
       marginRight: 8
     },
     titulo:{
-        color: defaultColors.activeColor
+        color: '#fff'
     }
 });

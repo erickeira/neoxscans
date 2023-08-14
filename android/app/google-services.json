@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "843695493072",
+    "project_id": "murimgateapp",
+    "storage_bucket": "murimgateapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843695493072:android:5ab2663ecdc4812fcc33d5",
+        "android_client_info": {
+          "package_name": "com.murimgate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843695493072-lapqrioipm424oofif61ea44khr69hnc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe5Zw9NE4wvkEOv4DWOflEeZsZnvcHXFQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843695493072-lapqrioipm424oofif61ea44khr69hnc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -34,13 +34,14 @@ export default function Busca({ navigation , route }){
         navigation.setOptions({
             headerShown: true,
             header: () => (
-                <SafeAreaView style={styles.headerStyle}>
+                <SafeAreaView style={[ styles.headerStyle, defaultStyles.defaultHeaderStyles ]}>
                     <HeaderLeft voltar color={'#fff'}/>
                     <Searchbar
                         ref={ref => { 
                           setInputeRef(ref)
                         }}
                         placeholder="Digite sua busca..."
+                        placeholderTextColor={'#666'}
                         onChangeText={verificaTempoDeDigitacao}
                         value={searchQuery}
                         style={styles.inputStyle}
@@ -67,7 +68,6 @@ export default function Busca({ navigation , route }){
       setCarregando(true)
       try{
         const response = await api.post(`busca`, { titulo : titulo, categoria: categoria })
-        console.log(response.data)
         if(response.data.status == 'success'){
           setMangas(response.data.resultados)
         }
@@ -103,7 +103,7 @@ export default function Busca({ navigation , route }){
             :
             <View style={{ paddingVertical: 60, alignItems: 'center', justifyContent: 'center' }}>
                 <Text allowFontScaling={ false } style={{ fontSize: 14, textAlign: 'center', color: '#fff' }}>
-                    {searchQuery == null ? 'Digite sua busca' :'Nenhuma scan encontrado!'} 
+                    {searchQuery == null ? '' :'Nenhuma scan encontrado!'} 
                 </Text>
             </View>
             

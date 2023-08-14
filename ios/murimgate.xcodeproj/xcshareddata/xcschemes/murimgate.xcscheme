@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "neoxscans.app"
-               BlueprintName = "neoxscans"
-               ReferencedContainer = "container:neoxscans.xcodeproj">
+               BuildableName = "murimgate.app"
+               BlueprintName = "murimgate"
+               ReferencedContainer = "container:murimgate.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "neoxscansTests.xctest"
-               BlueprintName = "neoxscansTests"
-               ReferencedContainer = "container:neoxscans.xcodeproj">
+               BuildableName = "murimgateTests.xctest"
+               BlueprintName = "murimgateTests"
+               ReferencedContainer = "container:murimgate.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "neoxscans.app"
-            BlueprintName = "neoxscans"
-            ReferencedContainer = "container:neoxscans.xcodeproj">
+            BuildableName = "murimgate.app"
+            BlueprintName = "murimgate"
+            ReferencedContainer = "container:murimgate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "neoxscans.app"
-            BlueprintName = "neoxscans"
-            ReferencedContainer = "container:neoxscans.xcodeproj">
+            BuildableName = "murimgate.app"
+            BlueprintName = "murimgate"
+            ReferencedContainer = "container:murimgate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
