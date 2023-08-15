@@ -7,6 +7,8 @@ import { Skeleton } from '@rneui/themed';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { useIsFocused } from '@react-navigation/native';
 
+import DefaultBook from '../../assets/images/defaultbook.png'
+
 export default function Detalhes({ navigation,  route }){
     const [ favoritado, setFavoritado ] = useState(route.params?.isFavoritado)
     const [capitulosLidos, setCapituloLidos] = useState([])
@@ -114,7 +116,7 @@ export default function Detalhes({ navigation,  route }){
                       /> */}
                       <AutoHeightImage
                             width={40}
-                            source={{uri: item.image ||  "https://neoxscans.net/wp-content/uploads/2022/05/Logo_Site_PSD_Branco_copiar_copy-2.png"}}
+                            source={item.iamge ?  {uri: item.image } : DefaultBook}
                             style={{borderRadius: 5}}
                       />
                       <ListItem.Content>
@@ -124,11 +126,17 @@ export default function Detalhes({ navigation,  route }){
                       </ListItem.Content>
                       {
                         item.data == 'up' ?
-                        <Image 
-                            source={{ uri: 'https://neoxscans.net/wp-content/uploads/2022/08/Botao-copiaa.png'}} 
-                            width={20}
-                            height={20}
-                          />
+                        <ListItem.Subtitle 
+                            right={true} 
+                            style={[styles.itemListData,{ color : capituloLido ? '#666' : '#fff'}]}
+                        >
+                            UP
+                        </ListItem.Subtitle>
+                        // <Image 
+                        //     source={{ uri: 'https://neoxscans.net/wp-content/uploads/2022/08/Botao-copiaa.png'}} 
+                        //     width={20}
+                        //     height={20}
+                        //   />
                         :
                         <ListItem.Subtitle 
                             right={true} 

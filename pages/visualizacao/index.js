@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView,ImageBackground, FlatList,Image, Dimensions, ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView,ImageBackground, FlatList,Image, Dimensions, ActivityIndicator, Animated, Modal} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { SalvarLeitura, api, defaultColors, GetLeitura, defaultStyles, MarcarCapituloLido, GetLidos } from '../../utils';
 import { WebView } from 'react-native-webview';
@@ -12,7 +12,9 @@ export default function Visualizacao({navigation, route }){
     const [ numeroCapitulo, setNumeroCapitulo] = useState(route.params?.capitulo)
     const [carregando, setCarregando] = useState(false)
     const [paginasCarregar, setPaginasCarregar] = useState([])
-    const [ showTabOptions, setShowTabOptions ] = useState(false)
+    const [ showTabOptions, setShowTabOptions ] = useState(true)
+    const [ posicaoNaTela, setPosicaoNaTela ] = useState(0)
+    const [scrollInfinito, setScrollInfinito] = useState(false)
 
     useEffect(() => {
       navigation.setOptions({
@@ -20,12 +22,16 @@ export default function Visualizacao({navigation, route }){
         headerTitleStyle: {
           fontSize: 16
         },
+        
       })
     }, [capitulo, numeroCapitulo])
 
     async function handleMarcacoes(){
       await SalvarLeitura(route.params?.manga, numeroCapitulo)
       await MarcarCapituloLido(route.params?.manga, numeroCapitulo)
+      setTimeout(() => {
+        setCarregando(false)
+      }, 2000);
     }
 
     useEffect(() => {
@@ -50,23 +56,52 @@ export default function Visualizacao({navigation, route }){
       }
     }
 
+    const scrollHandler = event => {
+      const offsetY = parseInt(event.nativeEvent.contentOffset.y);
+      if (offsetY > posicaoNaTela && showTabOptions) {
+        setShowTabOptions(false);
+      } else if (offsetY < posicaoNaTela && !showTabOptions) {
+        setShowTabOptions(true);
+      }
+      setPosicaoNaTela(offsetY)
+    };
+  
+
 
 
     // if(carregando) return <ActivityIndicator size={40} color={defaultColors.activeColor} style={{flex: 1}}/>
     return(
       <>
+        <Modal
+          transparent={true}
+          visible={carregando}
+        >
+          <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.41)'}}>
+            <ActivityIndicator size={40} color={defaultColors.activeColor} style={{flex: 1}}/>
+          </View>
+        </Modal>
         <WebView 
             // onScroll={(e) = onScroll(e)}      
-            originWhitelist={['*']}                 
+            originWhitelist={['*']}
+            // style={{ height: height }} 
+            nestedScrollEnabled             
+            javaScriptEnabled={true}
+            scrollEnabled={false}
+            onScroll={scrollHandler}
+            scrollEventThrottle={16} // Adjust this as needed
             source={{ uri: 
-              `https://neoxscans.vercel.app/capitulo?url=${route.params?.url}&capitulo=${numeroCapitulo}` 
+              `https://neoxscans.vercel.app/${scrollInfinito ? 'capituloscrollinfinito' : 'capitulo'}?url=${route.params?.url}&capitulo=${numeroCapitulo}` 
             }}                   
         />
+        
         <ViewOptions
+          show={showTabOptions}
           begin={numeroCapitulo == 1 || numeroCapitulo == 0}
           last={ numeroCapitulo == route.params?.manga.capitulos[0].numero.replace('Cap. ', '').replace('Cap. ', '') }
           onPressBack={() => setNumeroCapitulo(numeroCapitulo - 1)}
           onPressNext={() => setNumeroCapitulo(numeroCapitulo + 1)}
+          scrollinfinito={scrollInfinito}
+          changeModo={() => setScrollInfinito(!scrollInfinito)}
         />
       </>
     )
@@ -131,5 +166,5 @@ const styles = StyleSheet.create({
       height: '100%',
     //   flex: 1,
       resizeMode: 'contain'
-    },
+    }
 });

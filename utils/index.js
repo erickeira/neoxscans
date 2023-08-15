@@ -12,7 +12,7 @@ var api  = axios.create({
 const defaultColors = {
     primary : '#262626',
     secundary: '#181818',
-    activeColor: '#8D1C1C'
+    activeColor: '#AD1313'
 }
 const defaultStyles = StyleSheet.create({
     defaultHeaderStyles: {
