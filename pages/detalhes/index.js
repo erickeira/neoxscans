@@ -104,8 +104,8 @@ export default function Detalhes({ navigation,  route }){
               </View>
             )}
             renderItem={({item, index}) => {
-              let capitulo =  parseInt(item.capitulo.replace('Cap.', '')) || (mangaDetalhes?.capitulos?.length - (index + 1));
-              let capituloLido = capitulosLidos?.includes(parseInt(item.capitulo.replace('Cap.', '')))
+              let capitulo = parseInt(item.numero) || parseInt(item.capitulo.replace('Cap.', '')) || (mangaDetalhes?.capitulos?.length - (index + 1));
+              let capituloLido = capitulosLidos?.includes(parseInt(capitulo))
               return (
                 <TouchableOpacity onPress={() => navigation.navigate(`Visualizacao`, { capitulo : capitulo, url : manga?.url, manga: manga})}>
                   <ListItem containerStyle={styles.itemList}>

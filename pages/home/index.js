@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, FlatList, Image, ActivityIndicator } from 'react-native';
 import CardMangaList from '../../components/cardMangaList';
-import { GetLeituras, api, defaultStyles } from '../../utils';
+import { GetLeituras, api, defaultColors, defaultStyles } from '../../utils';
 import CardMangaContinue from '../../components/cardMangaContinue';
 import Chip from '../../components/chip';
 import axios from 'axios';
 import CardMangaListSkeleton from '../../components/carMangaListSkeleton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { Icon } from '@rneui/base';
 
 export default function Home(){
     const [ mangas, setMangas] = useState([])
     const [lendo, setLendo] = useState([])
     const [pagina, setPagina] = useState(0)
     const [carregando, setCarregando] = useState(true)
+    const [carregandoMais, setCarregandoMais] = useState(false)
+    const [ enReached , setEnReached ] = useState(false)
     const [salvos, setSalvos] = useState([])
     const isFocused = useIsFocused()
     const navigation = useNavigation()
+    const [listRef, setListRef] = useState(null)
+    const upButtonHandler = () => {
+      listRef?.scrollToOffset({ 
+        offset: 0, 
+        animated: true 
+      }); 
+    };
 
     useEffect(() =>{
       getSalvos()
@@ -34,14 +44,20 @@ export default function Home(){
 
     async function getMangas(){
       try{
+        console.log(pagina)
         const response = await api.get(`page/${pagina + 1}`)
-        if(response.data.status == 'success'){
-          setMangas(response.data.resultados)
+        if(response.data.status == 'success' && response.data?.resultados?.length > 0 ){
+          setMangas([...mangas, ...response.data.resultados] )
           setPagina(pagina + 1)
+        }else{
+          setEnReached(true)
         }
+        setCarregandoMais(false)
         setCarregando(false)
       }catch(error){
+        setEnReached(true)
         setCarregando(false)
+        setCarregandoMais(false)
       }
     }
     async function getSalvos(){
@@ -66,6 +82,7 @@ export default function Home(){
                 <FlatList
                   data={lendo}
                   horizontal
+                  ref={(ref) => {setListRef(ref)}}
                   showsHorizontalScrollIndicator={false}
                   renderItem={({item, index}) => {
                     return (
@@ -133,6 +150,35 @@ export default function Home(){
               </View>
             }
             keyExtractor={(item, index) => {  return `${item.numero}-${index}` }}
+            onEndReached={() => {
+              console.log(carregandoMais)
+              console.log(enReached)
+              if(!carregandoMais && !enReached){
+                setCarregandoMais(true)
+                getMangas()
+              }
+            }}
+            ListFooterComponent={() => {
+              if(carregandoMais) return (
+                <>
+                <CardMangaListSkeleton/>
+                <ActivityIndicator color={defaultColors.activeColor} size={30} style={{flex: 1, marginVertical: 15}}/>
+                </>
+              
+              )
+              
+              if(enReached) return(
+                <Chip
+                  style={{
+                    paddingVertical: 20
+                  }}
+                  icon={<Icon name="arrow-upward" type="MaterialIcons" color={"#fff"}/>}
+                  titulo={`Ir para o topo`}
+                  onPress={upButtonHandler}
+                />
+              )
+              return null
+            }}
           />
         </SafeAreaView>
     );

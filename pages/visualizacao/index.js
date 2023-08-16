@@ -85,8 +85,8 @@ export default function Visualizacao({navigation, route }){
             onScroll={scrollHandler}
             source={{ uri: 
               scrollInfinito ?
-              `http://192.168.10.115:3000/capituloscrollinfinito?url=${route.params?.url}&capitulo=${numeroCapitulo}`:
-              `http://192.168.10.115:3000/capitulo?url=${route.params?.url}&capitulo=${numeroCapitulo}` 
+              `http://neoxscans.vercel.app/capituloscrollinfinito?url=${route.params?.url}&capitulo=${numeroCapitulo}`:
+              `http://neoxscans.vercel.app/capitulo?url=${route.params?.url}&capitulo=${numeroCapitulo}` 
             }}                   
         />
         

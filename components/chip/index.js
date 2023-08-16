@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { defaultColors } from '../../utils';
 
-export default function Chip({ titulo, onPress}){
+export default function Chip({ titulo, onPress, style, textStyle, icon}){
 
     return (
         <TouchableOpacity 
             onPress={onPress} 
-            style={styles.view}
+            style={[styles.view, style]}
         >
-            <Text style={styles.titulo}>{titulo}</Text>
+            {icon}
+            <Text style={[styles.titulo, textStyle]}>{titulo}</Text>
         </TouchableOpacity>
     );
 }
@@ -17,6 +18,11 @@ export default function Chip({ titulo, onPress}){
 const styles = StyleSheet.create({
     view: {
       borderColor: '#fff',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 5,
       borderWidth: 0.3,
       paddingHorizontal: 15,
       paddingVertical: 5,
