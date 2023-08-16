@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView,ImageBackground, FlatList,Image, Dimensions, ActivityIndicator, Animated, Modal} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { SalvarLeitura, api, defaultColors, GetLeitura, defaultStyles, MarcarCapituloLido, GetLidos } from '../../utils';
@@ -10,10 +10,10 @@ const { height, width } = Dimensions.get('screen');
 export default function Visualizacao({navigation, route }){
     const [ capitulo, setCapitulo] = useState([])
     const [ numeroCapitulo, setNumeroCapitulo] = useState(route.params?.capitulo)
-    const [carregando, setCarregando] = useState(false)
     const [ showTabOptions, setShowTabOptions ] = useState(true)
     const [ posicaoNaTela, setPosicaoNaTela ] = useState(0)
     const [scrollInfinito, setScrollInfinito] = useState(false)
+    const webViewRef = useRef();
 
     useEffect(() => {
       navigation.setOptions({
@@ -27,16 +27,17 @@ export default function Visualizacao({navigation, route }){
     async function handleMarcacoes(capitulo = numeroCapitulo){
       await SalvarLeitura(route.params?.manga, capitulo)
       await MarcarCapituloLido(route.params?.manga, capitulo)
-      setTimeout(() => {
-        setCarregando(false)
-      }, 2000);
     }
 
     useEffect(() => {
-      setCarregando(true)
       // getCapitulo()
       handleMarcacoes()
+      webViewRef?.current?.reload();
     },[numeroCapitulo])
+
+    useEffect(() => {
+       webViewRef?.current?.reload();
+    },[scrollInfinito])
 
     const scrollHandler = event => {
       const offsetY = parseInt(event.nativeEvent.contentOffset.y);
@@ -72,17 +73,10 @@ export default function Visualizacao({navigation, route }){
     // if(carregando) return <ActivityIndicator size={40} color={defaultColors.activeColor} style={{flex: 1}}/>
     return(
       <>
-        <Modal
-          transparent={true}
-          visible={carregando}
-        >
-          <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.41)'}}>
-            <ActivityIndicator size={40} color={defaultColors.activeColor} style={{flex: 1}}/>
-          </View>
-        </Modal>
         <WebView 
             useWebKit={true}
             injectedJavaScript={INJECTED_JAVASCRIPT}
+            ref={(ref) => webViewRef.current = ref}
             originWhitelist={['*']}
             nestedScrollEnabled             
             javaScriptEnabled={true}
