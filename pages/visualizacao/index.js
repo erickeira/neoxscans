@@ -11,7 +11,6 @@ export default function Visualizacao({navigation, route }){
     const [ capitulo, setCapitulo] = useState([])
     const [ numeroCapitulo, setNumeroCapitulo] = useState(route.params?.capitulo)
     const [carregando, setCarregando] = useState(false)
-    const [paginasCarregar, setPaginasCarregar] = useState([])
     const [ showTabOptions, setShowTabOptions ] = useState(true)
     const [ posicaoNaTela, setPosicaoNaTela ] = useState(0)
     const [scrollInfinito, setScrollInfinito] = useState(false)
@@ -21,14 +20,13 @@ export default function Visualizacao({navigation, route }){
         headerTitle: `Cap.${numeroCapitulo}: ${route.params?.manga?.titulo}` || 'Visualização',
         headerTitleStyle: {
           fontSize: 16
-        },
-        
+        },   
       })
     }, [capitulo, numeroCapitulo])
 
-    async function handleMarcacoes(){
-      await SalvarLeitura(route.params?.manga, numeroCapitulo)
-      await MarcarCapituloLido(route.params?.manga, numeroCapitulo)
+    async function handleMarcacoes(capitulo = numeroCapitulo){
+      await SalvarLeitura(route.params?.manga, capitulo)
+      await MarcarCapituloLido(route.params?.manga, capitulo)
       setTimeout(() => {
         setCarregando(false)
       }, 2000);
@@ -40,22 +38,6 @@ export default function Visualizacao({navigation, route }){
       handleMarcacoes()
     },[numeroCapitulo])
 
-    async function getCapitulo(){
-      try{
-        const response = await api.post(`capitulo`, {
-          url : route.params?.url,
-          capitulo : numeroCapitulo
-        })
-        if(response.data.status == 'success'){
-            setCapitulo(response.data?.resultado)
-            setPaginasCarregar([response.data?.resultado.paginas[0]])
-        }
-        setCarregando(false)
-      }catch(error){
-        setCarregando(false)
-      }
-    }
-
     const scrollHandler = event => {
       const offsetY = parseInt(event.nativeEvent.contentOffset.y);
       if (offsetY > posicaoNaTela && showTabOptions) {
@@ -65,10 +47,28 @@ export default function Visualizacao({navigation, route }){
       }
       setPosicaoNaTela(offsetY)
     };
+
+    const INJECTED_JAVASCRIPT = `(function() {
+      window.postMessage = function(data){
+        window.ReactNativeWebView.postMessage(data);
+      }
+    })();`;
+
+    const handleWebViewMessage = (event) => {
+      // Analisa a mensagem recebida do WebView
+      const message = JSON.parse(event.nativeEvent?.data) ? JSON.parse(event.nativeEvent?.data) : {};
+      if (message.capitulo) {
+        handleMarcacoes(message.capitulo)
+        navigation.setOptions({
+          headerTitle: `Cap.${message.capitulo}: ${route.params?.manga?.titulo}` || 'Visualização',
+          headerTitleStyle: {
+            fontSize: 16
+          },   
+        })
+      }
+    };
   
-
-
-
+  
     // if(carregando) return <ActivityIndicator size={40} color={defaultColors.activeColor} style={{flex: 1}}/>
     return(
       <>
@@ -81,16 +81,18 @@ export default function Visualizacao({navigation, route }){
           </View>
         </Modal>
         <WebView 
-            // onScroll={(e) = onScroll(e)}      
+            useWebKit={true}
+            injectedJavaScript={INJECTED_JAVASCRIPT}
             originWhitelist={['*']}
-            // style={{ height: height }} 
             nestedScrollEnabled             
             javaScriptEnabled={true}
             scrollEnabled={false}
+            onMessage={handleWebViewMessage}
             onScroll={scrollHandler}
-            scrollEventThrottle={16} // Adjust this as needed
             source={{ uri: 
-              `https://neoxscans.vercel.app/${scrollInfinito ? 'capituloscrollinfinito' : 'capitulo'}?url=${route.params?.url}&capitulo=${numeroCapitulo}` 
+              scrollInfinito ?
+              `http://192.168.10.115:3000/capituloscrollinfinito?url=${route.params?.url}&capitulo=${numeroCapitulo}`:
+              `http://192.168.10.115:3000/capitulo?url=${route.params?.url}&capitulo=${numeroCapitulo}` 
             }}                   
         />
         
@@ -105,54 +107,6 @@ export default function Visualizacao({navigation, route }){
         />
       </>
     )
-    return (
-      <>
-        {
-          capitulo?.textos.length > 1 ? 
-          <ScrollView style={{padding: 20}}>
-            <Text>{capitulo?.textos.join('\n\n')}</Text>
-          </ScrollView>
-          :
-          <FlatList
-            data={capitulo?.paginas}
-            onEndReached={loadMore}
-            renderItem={ ({item, index}) => {
-                return(
-                  <WebView 
-                      useWebKit={true}
-                      originWhitelist={['*']} 
-                      decelerationRate="normal"                            
-                      source={{ uri: `${item.url}` }}   
-                      mixedContentMode={'compatibility'}                          
-                  />
-                  // <WebView 
-                  //   source={{ uri: `${item.url}` }} 
-                  //   style={{width: width, flex: 1 }} 
-                  // />
-                )
-                if(item.url) return (
-                  <AutoHeightImage
-                    width={width}
-                    source={{uri: `${item.url}`}}
-                    animated
-                  />
-                )
-                return(
-                  <Text>{item}</Text>
-                )
-            }}
-            ListEmptyComponent={
-              <View style={{ paddingVertical: 60, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text allowFontScaling={ false } style={{ fontSize: 14, textAlign: 'center', color: '#fff' }}>
-                      Mangá não encontrado!
-                  </Text>
-              </View>
-            } 
-            keyExtractor={(item, index) => {  return `${item.pagina}-${index}` }}
-          />    
-        }
-      </>
-    );
 }
 
 const styles = StyleSheet.create({
