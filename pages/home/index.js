@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, FlatList, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, FlatList, Image, ActivityIndicator,Dimensions,Animated } from 'react-native';
 import CardMangaList from '../../components/cardMangaList';
 import { GetLeituras, api, defaultColors, defaultStyles } from '../../utils';
 import CardMangaContinue from '../../components/cardMangaContinue';
@@ -9,6 +9,8 @@ import CardMangaListSkeleton from '../../components/carMangaListSkeleton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Icon } from '@rneui/base';
+
+const { height, width }  = Dimensions.get('screen');
 
 export default function Home(){
     const [ mangas, setMangas] = useState([])
@@ -20,12 +22,15 @@ export default function Home(){
     const [salvos, setSalvos] = useState([])
     const isFocused = useIsFocused()
     const navigation = useNavigation()
+    const [ showIrTopo, setShowIrTopo] = useState(false)
+    const [ posicaoNaTela, setPosicaoNaTela ] = useState(0)
     const [listRef, setListRef] = useState(null)
     const upButtonHandler = () => {
       listRef?.scrollToOffset({ 
         offset: 0, 
         animated: true 
-      }); 
+      });
+      setShowIrTopo(false)
     };
 
     useEffect(() =>{
@@ -66,10 +71,22 @@ export default function Home(){
       setSalvos(salvos)
     }
 
+    const scrollHandler = event => {
+      const offsetY = parseInt(event.nativeEvent.contentOffset.y);
+      if (offsetY > posicaoNaTela && showIrTopo) {
+        setShowIrTopo(false);
+      } else if (offsetY < posicaoNaTela && !showIrTopo && (posicaoNaTela > height)) {
+        setShowIrTopo(true);
+      }
+      setPosicaoNaTela(offsetY)
+    };
+
     return (
         <SafeAreaView style={styles.view}>
           <FlatList
             data={mangas}
+            ref={(ref) => {setListRef(ref)}}
+            onScroll={scrollHandler}
             ListHeaderComponent={(
               <View >
                 {
@@ -82,7 +99,6 @@ export default function Home(){
                 <FlatList
                   data={lendo}
                   horizontal
-                  ref={(ref) => {setListRef(ref)}}
                   showsHorizontalScrollIndicator={false}
                   renderItem={({item, index}) => {
                     return (
@@ -151,35 +167,44 @@ export default function Home(){
             }
             keyExtractor={(item, index) => {  return `${item.numero}-${index}` }}
             onEndReached={() => {
-              console.log(carregandoMais)
-              console.log(enReached)
               if(!carregandoMais && !enReached){
                 setCarregandoMais(true)
                 getMangas()
               }
             }}
             ListFooterComponent={() => {
-              if(carregandoMais) return (
+              if(!enReached) return (
                 <>
-                <CardMangaListSkeleton/>
-                <ActivityIndicator color={defaultColors.activeColor} size={30} style={{flex: 1, marginVertical: 15}}/>
+                  <CardMangaListSkeleton/>
+                  <ActivityIndicator color={defaultColors.activeColor} size={30} style={{flex: 1, marginVertical: 15}}/>
                 </>
-              
               )
-              
-              if(enReached) return(
+              return null
+            }}
+          />
+          {
+            showIrTopo ? 
+            <Animated.View>
                 <Chip
                   style={{
-                    paddingVertical: 20
+                    paddingVertical: 10,
+                    position: 'absolute',
+                    zIndex: 10,
+                    bottom: 10,
+                    right: 10,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
                   }}
                   icon={<Icon name="arrow-upward" type="MaterialIcons" color={"#fff"}/>}
                   titulo={`Ir para o topo`}
                   onPress={upButtonHandler}
                 />
-              )
-              return null
-            }}
-          />
+            </Animated.View>
+            : null
+
+          }
+        
+               
+              
         </SafeAreaView>
     );
 }
