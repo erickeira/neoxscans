@@ -3,12 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StyleSheet } from 'react-native';
 
-const apiUrl = "https://neoxscans.vercel.app/api/"
-
 var api  = axios.create({
-    baseURL: apiUrl,
     headers: { 'Content-Type': 'application/json' },
 });
+
 const defaultColors = {
     primary : '#262626',
     secundary: '#181818',
@@ -113,6 +111,15 @@ async function MarcarCapituloLido(manga, capitulo){
     return salvo
 } 
 
+async function changeLibrary(library){
+    await AsyncStorage.setItem('library', library)
+}
+
+async function getLibrary(){
+    const library = await AsyncStorage.getItem('library')
+    return library
+}
+
 async function GetLidos(manga){
     let lido = await AsyncStorage.getItem('lido')
     lido = JSON.parse(lido) ? JSON.parse(lido) : [];
@@ -130,5 +137,7 @@ export {
     GetLeitura,
     GetLeituras,
     MarcarCapituloLido,
-    GetLidos
+    GetLidos,
+    changeLibrary,
+    getLibrary
 }

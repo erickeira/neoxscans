@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Icon, ListItem,  Chip } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { SalvarScan, defaultColors } from '../../utils';
+import AutoHeightImage from 'react-native-auto-height-image';
 
+const { height, width }  = Dimensions.get('screen');
 
-export default function CardMangaList({ manga, isFavoritado, callbackremove }){
+export default function CardMangaList({ manga, isFavoritado, callbackremove, grid }){
     const [ favoritado, setFavoritado ] = useState(isFavoritado)
     const navigation = useNavigation()
 
@@ -18,12 +20,64 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
     useEffect(() => {
       setFavoritado(isFavoritado)
     },[isFavoritado])
+
+    function handleClick(){
+      navigation.navigate('Detalhes', { manga, isFavoritado })
+    }
+
+    if(grid) return(
+      <TouchableOpacity onPress={handleClick} style={[styles.view,{ marginHorizontal:  width * 0.010, flexDirection: 'column',  width: width * 0.45}]}>
+          <View style={[styles.image, { minHeight: 200}]}>
+            {
+              manga?.tipo ?
+              <Text style={styles.tagCategoria}>
+                  {manga?.tipo?.toUpperCase()}
+              </Text>
+              : null
+            }
+            <TouchableOpacity hitSlop={{ left: 20, bottom: 20}} onPress={handleFavoritar} style={[styles.containerFavorite, { position: 'absolute', right: 5, zIndex: 10, top: 5, backgroundColor: 'rgba(0, 0, 0, 0.5)', paddingVertical: 5, borderRadius: 5}]}>
+                {
+                    favoritado ?
+                    <Icon name="bookmark" type="Ionicons" color={defaultColors.activeColor} size={30}/> 
+                    :
+                    <Icon name="bookmark-outline" type="Ionicons" color="#fff" size={30}/>
+                }
+            </TouchableOpacity>
+
+              {
+                manga?.image ?
+                <AutoHeightImage 
+                    source={ {
+                        uri : manga?.image
+                    }} 
+                    width={width * 0.45} 
+                />
+                :
+                <View style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                  <Icon name='image' size={40} />
+                  <Text style={{color: '#666'}}>Sem imagem</Text>
+                </View>
+              }
+          </View>
+          
+          <View style={[styles.containerDetalhes, { paddingHorizontal: 0, width: '100%'}]}>
+              <Text style={{ fontSize: 14, textAlign: 'center', color: '#fff', fontWeight: '700' }}>
+                {manga?.titulo || manga?.name}
+              </Text>
+          </View>
+      </TouchableOpacity>
+    )
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('Detalhes', { manga, isFavoritado })} style={styles.view}>
+        <TouchableOpacity onPress={handleClick} style={styles.view}>
             <View style={styles.image}>
+              {
+                manga?.tipo ?
                 <Text style={styles.tagCategoria}>
                     {manga?.tipo?.toUpperCase()}
                 </Text>
+                : null
+              }
+
                 {
                   manga?.image ?
                   <Image  
@@ -43,8 +97,8 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
             
             <View style={styles.containerDetalhes}>
                 <View style={styles.containerTituloFavorite}>
-                    <Text style={styles.titulo}>{manga?.titulo}</Text>
-                    <TouchableOpacity hitSlop={{ left: 20, bottom: 20}} onPress={() => handleFavoritar()} style={styles.containerFavorite}>
+                    <Text style={styles.titulo}>{manga?.titulo || manga?.name}</Text>
+                    <TouchableOpacity hitSlop={{ left: 20, bottom: 20}} onPress={handleFavoritar} style={styles.containerFavorite}>
                         {
                             favoritado ?
                             <Icon name="bookmark" type="Ionicons" color={defaultColors.activeColor} size={30}/> 
@@ -55,13 +109,17 @@ export default function CardMangaList({ manga, isFavoritado, callbackremove }){
                 </View>
 
                 <View style={styles.containerRating}>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 1 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 2 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 3 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 4 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
-                    <Text style={{marginLeft: 5, fontSize: 12,color: '#fff'}}>{manga?.rating}</Text>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 1 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 2 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 3 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 4 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 5 ? "#B6A404" : "grey"} size={18}/>
+                    <Text style={{marginLeft: 5, fontSize: 12,color: '#fff'}}>{manga?.rating || manga?.score }</Text>
                 </View>
+
+                { manga?.chapters_count ? <Text style={{color: '#fff', marginBottom: 10}}>({manga?.chapters_count}) { manga?.chapters_count == '1' ? 'Capitulo' : 'Capitulos'}</Text> : null }
+                { manga?.categories ? <Text >{manga?.categories?.join(', ')}</Text> : null }
+
                   {
                     manga?.capitulos?.map((cap, index) => (
                       <ListItem key={index} containerStyle={styles.itemList}>

@@ -18,9 +18,14 @@ export default function CardBuscaList({ manga, isFavoritado, callbackremove }){
     return (
         <TouchableOpacity onPress={() => navigation.navigate('Detalhes', { manga, isFavoritado })} style={styles.view}>
             <View style={styles.image}>
-                <Text style={styles.tagCategoria}>
-                    {manga?.categoria}
-                </Text>
+                {
+                  manga?.categoria ?
+                  <Text style={styles.tagCategoria}>
+                      {manga?.categoria?.toUpperCase()}
+                  </Text>
+                  : null
+                }
+
                 {
                   manga?.image ?
                   <Image  

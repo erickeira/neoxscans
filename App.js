@@ -5,8 +5,8 @@ import {  NavigationContainer, DefaultTheme  } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
 import { PaperProvider } from 'react-native-paper';
 import codePush from "react-native-code-push";
-
 import { defaultColors, defaultStyles } from './utils';
+import AuthProvider from './context'
 
 const height = Dimensions.get('screen').height;
 
@@ -42,25 +42,27 @@ function App() {
     const routeNameRef  = React.useRef();
 
     return (
-        <NavigationContainer 
-            ref={navigationRef}
-            theme={theme}
-        >
-            <Modal 
-                animationType="none" 
-                transparent={true}
-                visible={ connectionOff }
-                presentationStyle="overFullScreen"
+        <AuthProvider>
+            <NavigationContainer 
+                ref={navigationRef}
+                theme={theme}
             >
-            <View style={{ flex: 1, backgroundColor: 'grey', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={[ { fontSize: 26, textAlign: 'center', marginBottom: 10 } ]}>Oops...</Text>
-                <Text style={{ fontSize: 14, lineHeight: 20, textAlign: 'center', paddingHorizontal: 40, marginBottom: 30 }}>Você está off-line.{"\n"}Verifique a sua conexão.</Text>					
-            </View>
+                <Modal 
+                    animationType="none" 
+                    transparent={true}
+                    visible={ connectionOff }
+                    presentationStyle="overFullScreen"
+                >
+                <View style={{ flex: 1, backgroundColor: 'grey', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={[ { fontSize: 26, textAlign: 'center', marginBottom: 10 } ]}>Oops...</Text>
+                    <Text style={{ fontSize: 14, lineHeight: 20, textAlign: 'center', paddingHorizontal: 40, marginBottom: 30 }}>Você está off-line.{"\n"}Verifique a sua conexão.</Text>					
+                </View>
 
-            </Modal>	
-            <MyDrawer/>  
-        
-      </NavigationContainer>
+                </Modal>
+                
+                    <MyDrawer/>
+            </NavigationContainer>
+        </AuthProvider>
     )
     
 }

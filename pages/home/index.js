@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, FlatList, Image, ActivityIndicator,Dimensions,Animated } from 'react-native';
 import CardMangaList from '../../components/cardMangaList';
 import { GetLeituras, api, defaultColors, defaultStyles } from '../../utils';
@@ -9,22 +9,28 @@ import CardMangaListSkeleton from '../../components/carMangaListSkeleton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Icon } from '@rneui/base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AuthContext } from '../../context';
 
 const { height, width }  = Dimensions.get('screen');
 
 export default function Home(){
+    const { library } = useContext(AuthContext)
     const [ mangas, setMangas] = useState([])
     const [lendo, setLendo] = useState([])
     const [pagina, setPagina] = useState(0)
     const [carregando, setCarregando] = useState(true)
     const [carregandoMais, setCarregandoMais] = useState(false)
     const [ enReached , setEnReached ] = useState(false)
+    const [ showGrid, setShowGrid] = useState(false)
     const [salvos, setSalvos] = useState([])
     const isFocused = useIsFocused()
     const navigation = useNavigation()
     const [ showIrTopo, setShowIrTopo] = useState(false)
     const [ posicaoNaTela, setPosicaoNaTela ] = useState(0)
     const [listRef, setListRef] = useState(null)
+
+
     const upButtonHandler = () => {
       listRef?.scrollToOffset({ 
         offset: 0, 
@@ -35,25 +41,34 @@ export default function Home(){
 
     useEffect(() =>{
       getSalvos()
-      if(isFocused) handleGetLeituras()
+      if(isFocused) {
+        handleGetLeituras()
+      }
     },[isFocused])
 
+    async function handleGetMangas(){
+      setCarregando(true)
+      if(library == 'neox')  getMangas(0)
+      if(library == 'mangalivre') getMangasLivre(0)
+      
+    }
+
     useEffect(() => {
-      getMangas()
-    },[])
+      handleGetMangas()
+    },[library])
+
 
     async function handleGetLeituras(){
       let auxLendo = await GetLeituras()
       setLendo(auxLendo)
     }
-
-    async function getMangas(){
+    async function getMangas(pag = pagina){
       try{
-        console.log(pagina)
-        const response = await api.get(`page/${pagina + 1}`)
+        console.log('getneox')
+        const response = await api.get(`https://neoxscans.vercel.app/api/page/${pag + 1}`)
         if(response.data.status == 'success' && response.data?.resultados?.length > 0 ){
           setMangas([...mangas, ...response.data.resultados] )
-          setPagina(pagina + 1)
+          setPagina(pag + 1)
         }else{
           setEnReached(true)
         }
@@ -65,6 +80,27 @@ export default function Home(){
         setCarregandoMais(false)
       }
     }
+    async function getMangasLivre(pag = pagina){
+      try{
+        console.log('getmangalivre')
+        const response = await api.get(`http://192.168.1.30:8080/recents/${pag + 1}`)
+        if(response.data?.mangas?.length > 0 ){
+          let auxMangas = pag == 0 ? [] : mangas
+          setMangas([...auxMangas, ...response.data.mangas] )
+          setPagina(pagina + 1)
+        }else{
+          setEnReached(true)
+        }
+        setCarregandoMais(false)
+        setCarregando(false)
+      }catch(error){
+        console.log(error)
+        setEnReached(true)
+        setCarregando(false)
+        setCarregandoMais(false)
+      }
+    }
+
     async function getSalvos(){
       let salvos = await AsyncStorage.getItem('salvos')
       salvos = JSON.parse(salvos) ? JSON.parse(salvos) : [];
@@ -139,16 +175,26 @@ export default function Home(){
                   />
                       
                 </ScrollView> 
-
-                <Text style={defaultStyles.tituloCategoria}>
-                  Últimas atualizações
-                </Text>
+                <View style={styles.containerTopoCapitulos}>
+                  <Text style={[defaultStyles.tituloCategoria]}>
+                    Últimas atualizações
+                  </Text>
+                  <TouchableOpacity onPress={() => setShowGrid(!showGrid)} style={styles.botaoOrdenar} hitSlop={{left: 20, right: 20, bottom: 5, top: 10}}>
+                    {
+                      showGrid ?
+                      <Icon name="view-list" type="MaterialIcons" color={'#fff'}/>
+                      :
+                      <Icon name="grid-view" type="MaterialIcons" color={'#fff'}/>
+                    }
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
+            numColumns={2}
             showsVerticalScrollIndicator={false}
             renderItem={({item, index}) => {
               let isFavoritado = salvos.find(salvo => salvo.url == item.url)?.url?.length > 0
-              return (<CardMangaList isFavoritado={isFavoritado} manga={item}/>) 
+              return (<CardMangaList isFavoritado={isFavoritado} grid={showGrid}  manga={item}/>) 
             }}
             ListEmptyComponent={
               carregando ? 
@@ -174,10 +220,7 @@ export default function Home(){
             }}
             ListFooterComponent={() => {
               if(!enReached) return (
-                <>
-                  <CardMangaListSkeleton/>
                   <ActivityIndicator color={defaultColors.activeColor} size={30} style={{flex: 1, marginVertical: 15}}/>
-                </>
               )
               return null
             }}
@@ -220,5 +263,20 @@ const styles = StyleSheet.create({
     },
     tag: {
       marginRight: 10,
-    }
+    },
+    containerTopoCapitulos:{
+      display: 'flex', 
+      flexDirection: 'row', 
+      justifyContent: 'space-between', 
+      marginHorizontal: 8,
+      marginVertical: 10,
+      alignItems: 'center'
+    },
+    botaoOrdenar: {
+      borderWidth: 0.3,
+      borderColor: '#fff',
+      paddingHorizontal: 23,
+      paddingVertical: 4,
+      borderRadius: 4
+    },
 });

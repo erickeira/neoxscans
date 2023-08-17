@@ -40,19 +40,12 @@ const HomeStack = ({ navigation }) => {
               source={Logo}
           />),
           headerTitleAlign: 'center',
-          // headerLeft: () => (
-          //   <TouchableOpacity
-          //     // onPress={() => navigation.openDrawer()}
-          //     hitSlop={{ right: 20, bottom: 20}}
-          //   >
-          //     <Avatar
-          //       size={32}
-          //       rounded
-          //       source={User}
-          //       containerStyle={{marginLeft: 12}}
-          //     />
-          //   </TouchableOpacity>
-          // ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.openDrawer()} hitSlop={{right: 20, bottom: 20}} style={{marginLeft: 12}}>
+               <Icon name="cloud" type="MaterialIcons" color={'#fff'}/>
+            </TouchableOpacity>
+          ),
+         
           headerRight: ()  => (
             <TouchableOpacity onPress={() => navigation.navigate('Busca')} hitSlop={{left: 20, bottom: 20}} style={{marginRight: 12}}>
               <Icon name="search" size={24}  color={"#fff"}/>

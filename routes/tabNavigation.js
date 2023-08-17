@@ -59,7 +59,7 @@ const TabNavigation = ({ navigation }) =>{
             headerTransparent: true,
             tabBarLabel: 'Salvos',
             tabBarShowLabel: false,
-            tabBarIcon: ({size, color}) => ( <Icon name="book" type="entypo" size={24}  color={color}/>)
+            tabBarIcon: ({size, color}) => ( <Icon name="auto-stories" type="MaterialIcons" size={24}  color={color}/>)
           }}  
         />
         {/* <Tab.Screen 

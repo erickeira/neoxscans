@@ -8,11 +8,12 @@ import {
   } from '@react-navigation/drawer';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { Badge, Icon } from '@rneui/themed'
-import { configureAPI, defaultColors, defaultStyles, existsOrError } from "../utils";
+import { changeLibrary, configureAPI, defaultColors, defaultStyles, existsOrError } from "../utils";
 import { navigationRef } from '../App'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Avatar } from '@rneui/themed';
 import User from '../assets/images/user.png'
+import { AuthContext } from "../context";
 
 const windowHeight = Dimensions.get('window').height; 
 
@@ -21,6 +22,7 @@ export default function DrawerContent(props){
     const [appCenterVersion, setAppCenterVersion] = useState('')
     const isDrawerOpen = useDrawerStatus() === 'open';
     const currentRouteName = navigationRef?.current?.getCurrentRoute().name;
+    const { handleCheckLibrary } = useContext(AuthContext)
 
     useEffect(() => {
         StatusBar.setBarStyle( isDrawerOpen  || currentRouteName == 'Home' ? 'light-content' : 'dark-content', true);
@@ -32,29 +34,38 @@ export default function DrawerContent(props){
             {...props}
         >
             <DrawerItemList {...props} />
-            {/* <DrawerItem
-                label="Início"
+
+            <DrawerItem
+                label="Neox Scans"
                 style={styles.drawerItem}
-                onPress={() => navigation.navigate('HomeTab')}
+                onPress={async() => {
+                    await changeLibrary('neox')
+                    await handleCheckLibrary()
+                    navigation.navigate('HomeTab')
+                    navigation.navigate('Home')
+                }}
                 labelStyle={styles.labelStyle}
-                icon={({ focused, color, size }) => 
-                    <Icon  type="feather" color={'#fff'} size={size} name={'home'} />
-                }
-            /> */}
-            <View style={{display: 'flex', flexDirection : 'row', alignItems: 'center', gap: 10, marginVertical:15}}>
-                <Avatar
-                    size={32}
-                    rounded
-                    source={User}
-                    containerStyle={{marginLeft: 12}}
-                />
+            />
+            <DrawerItem
+                label="Mangá Livre"
+                style={styles.drawerItem}
+                onPress={async() => {
+                    await changeLibrary('mangalivre')
+                    await handleCheckLibrary()
+                    navigation.navigate('HomeTab')
+                    navigation.navigate('Home')
+
+                }}
+                labelStyle={styles.labelStyle}
+            />
+            <View style={{display: 'flex', flexDirection : 'row', alignItems: 'center', gap: 10, marginVertical:15, marginLeft: 15}}>
                 <Text
                     style={{
-                        fontSize: 16,
-                        color: '#fff'
+                        fontSize: 10,
+                        color: '#666'
                     }}
                 >
-                    Fazer login (em breve)
+                    Selecione o servidor desejado
                 </Text>
             </View>
         </DrawerContentScrollView>

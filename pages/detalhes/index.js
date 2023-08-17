@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { GetLidos, SalvarScan, api, defaultColors, defaultStyles } from '../../utils';
 import CardDetails from '../../components/cardDetails';
@@ -8,6 +8,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import { useIsFocused } from '@react-navigation/native';
 
 import DefaultBook from '../../assets/images/defaultbook.png'
+import { AuthContext } from '../../context';
 
 export default function Detalhes({ navigation,  route }){
     const [ favoritado, setFavoritado ] = useState(route.params?.isFavoritado)
@@ -20,6 +21,7 @@ export default function Detalhes({ navigation,  route }){
     const isFocused = useIsFocused()
     const [ capitulosRef, setCapitulosRef ] = useState(null)
     const capitulo = route.params?.capitulo
+    const { library } = useContext(AuthContext)
 
     async function handleFavoritar(){
       const salvo = await SalvarScan(manga)
@@ -44,7 +46,7 @@ export default function Detalhes({ navigation,  route }){
 
     useEffect(() => {
         navigation.setOptions({
-            headerTitle: manga?.titulo,
+            headerTitle: manga?.titulo || manga?.name,
             headerRight: () => (
                 <TouchableOpacity hitSlop={{ left: 20, bottom: 20}}  onPress={() => handleFavoritar()} style={styles.containerFavorite}>
                     {
@@ -63,13 +65,23 @@ export default function Detalhes({ navigation,  route }){
       getManga()
     },[])
 
+    async function handleGetMangas(){
+      setCarregando(true)
+      if(library == 'neox')  getManga()
+      if(library == 'mangalivre') getMangaLivre()
+    }
+
+    useEffect(() => {
+      handleGetMangas()
+    },[library])
+
     useEffect(() => {
       handleGetLidos()
     },[isFocused])
 
     async function getManga(){
       try{
-        const response = await api.post(`detalhes`, {
+        const response = await api.post(`https://neoxscans.vercel.app/api/detalhes`, {
           url : manga.url
         })
         if(response.data.status == 'success'){
@@ -79,7 +91,21 @@ export default function Detalhes({ navigation,  route }){
       }catch(error){
         setCarregando(false)
       }
+    }
 
+    async function getMangaLivre(){
+      try{
+        const response = await api.get(`http://192.168.1.30:8080/chapters/${manga?.id}`)
+        const auxCapitulos = response.data?.chapters
+        if(auxCapitulos){
+          let newManga = {...manga}
+          newManga.capitulos = auxCapitulos
+          setMangaDetalhes( newManga)
+        }
+        setCarregando(false)
+      }catch(error){
+        setCarregando(false)
+      }
     }
 
     return (
@@ -104,10 +130,10 @@ export default function Detalhes({ navigation,  route }){
               </View>
             )}
             renderItem={({item, index}) => {
-              let capitulo = parseInt(item.numero) || parseInt(item.capitulo.replace('Cap.', '')) || (mangaDetalhes?.capitulos?.length - (index + 1));
+              let capitulo = parseInt(item?.numero) || parseInt(item?.capitulo?.replace('Cap.', '')) || (mangaDetalhes?.capitulos?.length - (index + 1));
               let capituloLido = capitulosLidos?.includes(parseInt(capitulo))
               return (
-                <TouchableOpacity onPress={() => navigation.navigate(`Visualizacao`, { capitulo : capitulo, url : manga?.url, manga: manga})}>
+                <TouchableOpacity onPress={() => navigation.navigate(`Visualizacao`, { capitulo : capitulo, url : manga?.url, manga: manga, id_release: manga.id})}>
                   <ListItem containerStyle={styles.itemList}>
                       {/* <Avatar 
                         size={45}
@@ -116,12 +142,13 @@ export default function Detalhes({ navigation,  route }){
                       /> */}
                       <AutoHeightImage
                             width={40}
-                            source={item.iamge ?  {uri: item.image } : DefaultBook}
+                            source={item.image ?  {uri: item.image } : DefaultBook}
                             style={{borderRadius: 5}}
                       />
                       <ListItem.Content>
                           <ListItem.Title style={[styles.itemListTitulo,{ color : capituloLido ? '#666' : '#fff'}]}>
-                            Cap. {item.capitulo}
+                           { item.capitulo ? `Cap. ${item.capitulo}` : null } 
+                           { item.number? `Cap.  ${item.number} ${item.chapter_name}` : null } 
                           </ListItem.Title>
                       </ListItem.Content>
                       {
@@ -142,7 +169,7 @@ export default function Detalhes({ navigation,  route }){
                             right={true} 
                             style={[styles.itemListData,{ color : capituloLido ? '#666' : '#fff'}]}
                         >
-                            {item.data}
+                            {item.data || item.date}
                         </ListItem.Subtitle>
                       }
                      

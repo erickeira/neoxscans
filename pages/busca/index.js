@@ -67,7 +67,7 @@ export default function Busca({ navigation , route }){
     async function getMangas(titulo =''){
       setCarregando(true)
       try{
-        const response = await api.post(`busca`, { titulo : titulo, categoria: categoria })
+        const response = await api.post(`https://neoxscans.vercel.app/api/busca`, { titulo : titulo, categoria: categoria })
         if(response.data.status == 'success'){
           setMangas(response.data.resultados)
         }

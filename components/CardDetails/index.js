@@ -100,12 +100,12 @@ export default function CardDetails({ manga, carregando }){
             
             <View style={styles.containerDetalhes}>
                 <View style={styles.containerRating}>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 1 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 2 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 3 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 4 ? "#B6A404" : "grey"} size={18}/>
-                    <Icon name="star" type="material-community" color={Math.round(manga?.rating) >= 5 ? "#B6A404" : "grey"} size={18}/>
-                    <Text style={{marginLeft: 5, fontSize: 12, color: '#666'}}>{manga?.rating}</Text>
+                <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 1 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 2 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 3 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 4 ? "#B6A404" : "grey"} size={18}/>
+                    <Icon name="star" type="material-community" color={Math.round(manga?.rating || (manga?.score / 2)) >= 5 ? "#B6A404" : "grey"} size={18}/>
+                    <Text style={{marginLeft: 5, fontSize: 12,color: '#fff'}}>{manga?.rating || manga?.score}</Text>
                 </View>
                 <View style={{marginTop: 10}}>
                     <ListItem containerStyle={styles.itemList}>
@@ -113,9 +113,23 @@ export default function CardDetails({ manga, carregando }){
                               <ListItem.Title style={styles.itemListTitulo}>Gênero(s)</ListItem.Title>
                           </ListItem.Content>
                           <ListItem.Subtitle style={styles.itemListSubtitulo} >
-                            {manga?.generos}
+                            {
+                              manga?.generos || manga?.categories?.join(', ')
+                            }
                           </ListItem.Subtitle>
                     </ListItem>
+                    {
+                      manga?.author ? 
+                      <ListItem containerStyle={styles.itemList}>
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.itemListTitulo}>Autor</ListItem.Title>
+                        </ListItem.Content>
+                        <ListItem.Subtitle style={styles.itemListSubtitulo} >
+                          {manga?.author}
+                        </ListItem.Subtitle>
+                      </ListItem>
+                      : null
+                    }
                     {
                       manga?.estudio ?
                       <ListItem containerStyle={styles.itemList}>
@@ -153,11 +167,13 @@ export default function CardDetails({ manga, carregando }){
                       : null
                     }
 
+
                 </View>
             </View>
         </View>
         <Text style={styles.descricao}>
             {manga?.descricao?.join('\n\n')}
+            {manga?.description}
         </Text>
         <Divider/>
       </>
@@ -248,7 +264,10 @@ const styles = StyleSheet.create({
         padding: 0,
         margin: 0,
         fontSize: 13,
-        fontWeight: '500'
+        fontWeight: '500',
+        display: 'flex',
+        flexWrap: 'wrap',
+         maxWidth: '65%'
       },
 
 });
