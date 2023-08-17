@@ -50,7 +50,6 @@ export default function Home(){
       setCarregando(true)
       if(library == 'neox')  getMangas(0)
       if(library == 'mangalivre') getMangasLivre(0)
-      
     }
 
     useEffect(() => {
